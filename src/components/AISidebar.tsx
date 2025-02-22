@@ -63,7 +63,7 @@ const mockMessages: Message[] = [
   {
     id: '1',
     content: "Hey! I just uploaded my files with my grant specifications.",
-    sender: 'user',
+    sender: 'ai',
     timestamp: new Date('2025-02-08T17:30:00')
   },
   {
@@ -75,7 +75,7 @@ const mockMessages: Message[] = [
   {
     id: '3',
     content: "Thanks! Could you help me with the Broader Impacts section?",
-    sender: 'user',
+    sender: 'ai',
     timestamp: new Date('2025-02-08T17:31:00')
   },
   {
@@ -110,8 +110,17 @@ interface AISidebarProps {
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [responseText, setResponseText] = useState('');
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [mockMessageIndex, setMockMessageIndex] = useState(0);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isTyping]);
 
 
   const showTypingAnimation = (message: string, onComplete?: () => void) => {
@@ -121,7 +130,7 @@ interface AISidebarProps {
   };
 
   // Function to send the user's question to the API route via POST.
-  async function handleSend() {
+  async function handleAPISend() {
     setIsLoading(true);
     try {
         const res = await fetch("/api/chat", {
@@ -149,6 +158,58 @@ interface AISidebarProps {
         setChatHistory((prev) => [...prev, errorMessage]); // Update chat history
     }
   }
+
+
+  const handleSend = () => {
+    if (!inputValue.trim() || isTyping) return;
+    
+    const userMessage: Message = {
+        id: Date.now().toString(),
+        content: inputValue.trim(),
+        sender: 'user',
+        timestamp: new Date()
+    };
+
+    // Add user message to chat
+    setMessages(prev => [...prev, userMessage]);
+    
+    setIsLoading(true);
+    setInputValue('');
+    
+    // Reset textarea height
+    if (inputRef.current) {
+        inputRef.current.style.height = '36px';
+    }
+    
+    // Delay before sending the next mock message
+    setTimeout(() => {
+        setIsLoading(false);
+        
+        // Send the next mock message if available
+        if (mockMessageIndex < mockMessages.length) {
+            const nextMockMessage = mockMessages[mockMessageIndex];
+            const mockMessage: Message = {
+                id: (Date.now() + mockMessageIndex).toString(), // Unique ID for each mock message
+                content: nextMockMessage.content,
+                sender: 'ai',
+                timestamp: new Date()
+            };                         
+
+            // Show typing animation before displaying the AI message
+            showTypingAnimation(nextMockMessage.content, () => {
+                setMessages(prev => [...prev, mockMessage]);
+            });
+            
+            setMockMessageIndex(prevIndex => prevIndex + 1); // Increment the index for the next message
+        }
+    }, 1500); // 1.5 second delay for the typing animation
+    
+    // Focus back on input after sending
+    if (inputRef.current) {
+        inputRef.current.focus();
+    }
+  };
+
     // Auto-scroll to the latest message whenever the chat history changes.
     useEffect(() => {
       if (chatEndRef.current) {
@@ -216,15 +277,6 @@ interface AISidebarProps {
                         };
                         setMessages(prev => [...prev, newMessage]);
                         setIsTyping(false);
-
-                        // After first message, update editor and show follow-up
-                        if (!DEMO_MODE && responseText !== "I've updated the editor with the standard NSF 23-610 grant format. You can now start editing the document following these guidelines.") {
-                          onUpdateContent(mockEditorContent);
-                          setTimeout(() => {
-                            const followUpMessage = "I've updated the editor with the standard NSF 23-610 grant format. You can now start editing the document following these guidelines.";
-                            showTypingAnimation(followUpMessage);
-                          }, 500);
-                        }
                       }
                     }}
                   />
@@ -291,27 +343,39 @@ interface AISidebarProps {
 
       <div className="p-3 border-t bg-white">
         <div className="flex gap-2">
-          <div className="flex-1 relative">
-            <input
-              type="text"
-              placeholder="Ask anything..."
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
 
+        <div className="flex-1 relative">
+            <textarea
+              ref={inputRef}
+              value={inputValue}
+              onChange={(e) => {
+                setInputValue(e.target.value);
+                // Auto-resize the textarea
+                e.target.style.height = 'auto';
+                e.target.style.height = e.target.scrollHeight + 'px';
+              }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
                   handleSend();
                 }
               }}
-              className="w-full pl-3 pr-8 py-1.5 text-sm border border-gray-200 rounded-md text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Ask anything..."
+              rows={1}
+              style={{ resize: 'none', minHeight: '36px', height: 'auto' }}
+              className="w-full pl-3 pr-3 py-1.5 text-sm border border-gray-200 rounded-md text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 overflow-y-auto"
             />
           </div>
+          
           <button 
-          className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors font-medium"
-          onClick={handleSend}
->
-            Send
+            onClick={handleSend}
+            disabled={isLoading || isTyping || !inputValue.trim()}
+            className="p-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            aria-label="Send message"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 12h14m-7-7l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </button>
         </div>
       </div>

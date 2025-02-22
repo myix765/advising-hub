@@ -40,3 +40,23 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+
+/* Custom animations */
+@keyframes loading-bounce {
+  0%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-4px); }
+}
+
+.animate-loading-1 {
+  animation: loading-bounce 1.4s infinite ease-in-out;
+}
+
+.animate-loading-2 {
+  animation: loading-bounce 1.4s infinite ease-in-out -0.32s;
+}
+
+.animate-loading-3 {
+  animation: loading-bounce 1.4s infinite ease-in-out -0.16s;
+}
