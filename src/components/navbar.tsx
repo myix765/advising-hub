@@ -59,6 +59,8 @@ const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
 })<AppBarProps>(({ theme }) => ({
   zIndex: theme.zIndex.drawer + 1,
+  backgroundColor: 'transparent',
+  boxShadow: 'none',
   transition: theme.transitions.create(['width', 'margin'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -119,7 +121,7 @@ const Navbar: React.FC = () => {
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
-        <Toolbar>
+        <Toolbar sx={{ backgroundColor: 'transparent' }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -128,20 +130,29 @@ const Navbar: React.FC = () => {
             sx={[
               {
                 marginRight: 5,
+                color: 'black',
               },
               open && { display: 'none' },
             ]}
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography 
+            variant="h6" 
+            noWrap 
+            component="div" 
+            sx={{ color: 'black' }}>
             Hub
           </Typography>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton 
+            onClick={handleDrawerClose}
+            sx={[
+              !open && { display: 'none' }
+            ]}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </DrawerHeader>
