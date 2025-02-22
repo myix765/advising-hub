@@ -40,17 +40,16 @@ export async function scrapeSIS() {
                     .map(section => {
                         const cells = section.querySelectorAll('td');
                         const locationDiv = cells[3]?.querySelector('.tfp-loc');
-                        const scheduleText = locationDiv?.querySelector('div')?.textContent?.trim() || '';
-                        const locationNodes = locationDiv?.childNodes;
-                        const location = locationNodes?.[1]?.textContent?.trim() || '';
-                        const session = locationNodes?.[2]?.textContent?.trim() || '';
+                        const nodes = locationDiv?.childNodes;
+                        const classTime = nodes?.[1]?.textContent?.trim() || '';
+                        const location = nodes?.[2]?.textContent?.trim() || '';
                         
                         return {
                             section: cells[0]?.firstChild?.textContent?.trim() || '',
                             classNo: cells[1]?.textContent?.trim() || '',
-                            schedule: scheduleText,
+                            classTime: classTime,
                             location: location,
-                            session: session,
+                            session: cells[2]?.textContent?.trim() || '',
                             faculty: cells[3]?.querySelector('.tfp-ins')?.textContent?.trim() || '',
                             credits: cells[4]?.textContent?.trim() || '',
                             status: cells[6]?.querySelector('img')?.getAttribute('alt') || ''
