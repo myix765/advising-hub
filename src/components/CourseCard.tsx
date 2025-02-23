@@ -55,7 +55,7 @@ const CourseCard = ({
 
   // Regular card view (not confirmed)
   return (
-    <div className="bg-white rounded-lg p-2.5 max-w-sm shadow-sm">
+    <div className="bg-white rounded-lg p-2.5 max-w-sm shadow-sm mb-4">
       {/* Always visible: course code and name */}
       <div className="flex justify-between items-start mb-0.5">
         <h2 className="text-sm font-semibold text-gray-900">
@@ -108,7 +108,7 @@ const CourseCard = ({
       <div className="mt-2 flex justify-end">
         <button
           onClick={() => setIsConfirmed(true)}
-          className="px-3 py-1 text-xs text-white bg-green-500 rounded hover:bg-green-600 transition-colors"
+          className="px-4 py-2 text-white bg-lime-500 rounded-full hover:bg-green-600 transition-colors"
         >
           Add
         </button>

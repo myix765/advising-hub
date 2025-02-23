@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import LoadingDots from './LoadingDots';
 import TypingAnimation from './TypingAnimation';
 import CourseCard from './CourseCard';
+import AIAuditClassList from './AIAuditClassList';
 
 const courses = [
   {
@@ -60,6 +61,33 @@ const courses = [
   }
 ];
 
+const courseList = [
+  {
+    courseCode: "CS 40",
+    courseName: "Machine Structure & Assembly",
+    attributes: ["CS Core"],
+    credits: 5
+  },
+  {
+    courseCode: "CS 171",
+    courseName: "Human Computer Interaction",
+    attributes: ["CS Elective"],
+    credits: 3
+  },
+  {
+    courseCode: "CS 138",
+    courseName: "Reinforcement Learning",
+    attributes: ["CS Core"],
+    credits: 4
+  },
+  {
+    courseCode: "MATH 165",
+    courseName: "Probability",
+    attributes: ["CS Elective", "MATH/NS"],
+    credits: 4
+  }
+];
+
 
 interface Message {
   id: string;
@@ -69,6 +97,14 @@ interface Message {
 }
 
 const mockMessages: Message[] = [
+  {
+    id: '6',
+    content: (
+      <AIAuditClassList courseList={courseList}/>
+    ),
+    sender: 'ai',
+    timestamp: new Date('2025-02-08T17:31:05')
+  },
   {
     // What classes should I take if I want to do robotics and fulfill my requirements?
     id: '1',
@@ -207,23 +243,85 @@ const mockMessages: Message[] = [
 ];
 
 interface AISidebarProps {
+  selectedCourses: Set<AuditCourseProps>;
   onUpdateContent: (content: string) => void;
 }
 
-export default function AISidebar({ onUpdateContent }: AISidebarProps) {
+const AISidebar: React.FC<AISidebarProps> = ({ selectedCourses, onUpdateContent }) => {
   const [messages, setMessages] = useState<Message[]>(false ? mockMessages : []);
-  const [activeTab, setActiveTab] = useState('suggestions');
+  // const [activeTab, setActiveTab] = useState('suggestions');
   const [chatResponse, setChatResponse] = useState("");
   const [inputValue, setInputValue] = useState(""); // User input
   const [chatHistory, setChatHistory] = useState<string[]>([]);
   const chatEndRef = useRef<HTMLDivElement | null>(null);
-  const [selectedSuggestion, setSelectedSuggestion] = useState<any>(null);
+  // const [selectedSuggestion, setSelectedSuggestion] = useState<any>(null);
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [responseText, setResponseText] = useState('');
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [mockMessageIndex, setMockMessageIndex] = useState(0);
+
+  const [hasAppendedMessages, setHasAppendedMessages] = useState(false);
+
+  // append to the front of mockMessages
+  // useEffect(() => {
+  //   if (!hasAppendedMessages) {
+  //     const newMessages: Message[] = [
+  //       {
+  //         id: "6", // Use the courseID as a unique id
+  //         content: (
+  //           <AIAuditClassConfirm
+  //             courseID={dummyCourseList[2].courseID}
+  //             courseName={dummyCourseList[2].courseName}
+  //             credits={dummyCourseList[2].credits}
+  //             attributes={dummyCourseList[2].attributes}
+  //           />
+  //         ),
+  //         sender: "ai",
+  //         timestamp: new Date("2025-02-22T17:30:00"),
+  //       },
+  //       {
+  //         id: "6", // Use the courseID as a unique id
+  //         content: (
+  //           <AIAuditClassConfirm
+  //             courseID={dummyCourseList[1].courseID}
+  //             courseName={dummyCourseList[1].courseName}
+  //             credits={dummyCourseList[1].credits}
+  //             attributes={dummyCourseList[1].attributes}
+  //           />
+  //         ),
+  //         sender: "ai",
+  //         timestamp: new Date("2025-02-22T17:30:00"),
+  //       },
+  //       {
+  //         id: "6",
+  //         content: (
+  //           <AIAuditClassConfirm
+  //             courseID={dummyCourseList[0].courseID}
+  //             courseName={dummyCourseList[0].courseName}
+  //             credits={dummyCourseList[0].credits}
+  //             attributes={dummyCourseList[0].attributes}
+  //           />
+  //         ),
+  //         sender: "ai",
+  //         timestamp: new Date("2025-02-22T17:30:00"),
+  //       },
+  //       {
+  //         id: "5",
+  //         content: <AIClassList courseList={dummyCourseList} />,
+  //         sender: "ai",
+  //         timestamp: new Date("2025-02-22T17:30:00"),
+  //       },
+  //     ];
+
+  //     // Prepend new messages only once
+  //     setMessages((prevMessages) => [...newMessages, ...prevMessages]);
+
+  //     // Set the flag to true so this effect doesn't run again
+  //     setHasAppendedMessages(true);
+  //   }
+  // }, [hasAppendedMessages]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -247,7 +345,7 @@ export default function AISidebar({ onUpdateContent }: AISidebarProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: inputValue }),
       });
-      
+
       setTimeout(() => {
         setIsLoading(false);
         setIsTyping(true);
@@ -268,7 +366,7 @@ export default function AISidebar({ onUpdateContent }: AISidebarProps) {
 
   const handleSend = () => {
     if (!inputValue.trim() || isTyping) return;
-    
+
     const userMessage: Message = {
       id: Date.now().toString(),
       content: inputValue.trim(),
@@ -283,7 +381,7 @@ export default function AISidebar({ onUpdateContent }: AISidebarProps) {
     if (inputRef.current) {
       inputRef.current.style.height = '36px';
     }
-    
+
     setTimeout(() => {
       setIsLoading(false);
       if (mockMessageIndex < mockMessages.length) {
@@ -298,11 +396,11 @@ export default function AISidebar({ onUpdateContent }: AISidebarProps) {
         showTypingAnimation(nextMockMessage.content, () => {
           setMessages(prev => [...prev, mockMessage]);
         });
-        
+
         setMockMessageIndex(prevIndex => prevIndex + 1);
       }
     }, 1500);
-    
+
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -383,7 +481,7 @@ export default function AISidebar({ onUpdateContent }: AISidebarProps) {
           <div ref={messagesEndRef} />
         </div>
       </div>
-      
+
       {/* Input Area */}
       <div className="p-3 border-t bg-white">
         <div className="flex gap-2">
@@ -408,14 +506,14 @@ export default function AISidebar({ onUpdateContent }: AISidebarProps) {
               className="w-full pl-3 pr-3 py-1.5 text-sm border border-gray-200 rounded-md text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 overflow-y-auto"
             />
           </div>
-          <button 
+          <button
             onClick={handleSend}
             disabled={isLoading || isTyping || !inputValue.trim()}
             className="p-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             aria-label="Send message"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M5 12h14m-7-7l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M5 12h14m-7-7l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
         </div>
@@ -423,3 +521,5 @@ export default function AISidebar({ onUpdateContent }: AISidebarProps) {
     </div>
   );
 }
+
+export default AISidebar;
