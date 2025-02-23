@@ -80,7 +80,6 @@ const Schedule = ({
             return null;
         }).filter((course) => course !== null);
     })
-    console.log(formattedCourses)
 
     return (
         <div className="flex flex-col p-6">
