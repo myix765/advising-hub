@@ -1,0 +1,24 @@
+[
+    [
+        {
+            "courseCode": "CS-0160",
+            "section": "01-LEC"
+        },
+        {
+            "courseCode": "CS-0160",
+            "section": "RA-RCT"
+        },
+        {
+            "courseCode": "CS-0150",
+            "section": "02-LEC"
+        },
+        {
+            "courseCode": "MATH-0070",
+            "section": "02-LEC"
+        },
+        {
+            "courseCode": "MATH-0070",
+            "section": "R04-RCT"
+        }
+    ]
+]

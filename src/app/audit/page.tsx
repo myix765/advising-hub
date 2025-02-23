@@ -1,7 +1,7 @@
 'use client'
 
 import AISidebar from "@/components/AISidebar";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/Topnav";
 import ReqBlock from "@/components/ReqBlock";
 
 interface Course {

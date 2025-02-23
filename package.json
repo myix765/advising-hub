@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "predev": "npm i",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -15,14 +16,17 @@
     "@mui/material": "^6.4.5",
     "@mui/styled-engine-sc": "^6.4.3",
     "next": "15.1.7",
+    "puppeteer": "^24.2.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-icons": "^5.5.0",
     "styled-components": "^6.1.15"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4.0.8",
     "@types/node": "^20",
+    "@types/puppeteer": "^5.4.7",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
