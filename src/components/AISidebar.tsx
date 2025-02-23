@@ -3,6 +3,62 @@
 import { useEffect, useState, useRef } from 'react';
 import LoadingDots from './LoadingDots';
 import TypingAnimation from './TypingAnimation';
+import CourseCard from './CourseCard';
+
+const courses = [
+  {
+    courseCode: "CS 40",
+    courseName: "Machine Structure & Assembly",
+    instructor: "Mark Sheldon",
+    time: "MWF 10:30 - 11:45 AM",
+    location: "TTC Auditorium",
+    description: "Introduction to computer architecture and assembly language. Topics include digital logic, processor organization, memory hierarchies, and assembly programming.",
+    requirements: ["CS 11", "CS15"],
+    ratings: {
+      overall: 4.2,
+      difficulty: 3.8
+    }
+  },
+  {
+    courseCode: "CS 160",
+    courseName: "Algorithms",
+    instructor: "Karen Edwards",
+    time: "TTh 1:30 - 2:45 PM",
+    location: "Joyce Cummings 270",
+    description: "Design and analysis of efficient algorithms. Topics include sorting, searching, dynamic programming, graph algorithms, NP-completeness.",
+    requirements: ["CS 15", "MATH 61"],
+    ratings: {
+      overall: 4.5,
+      difficulty: 4.0
+    }
+  },
+  {
+    courseCode: "CS 138",
+    courseName: "Reinforcement Learning",
+    instructor: "Michael Hughes",
+    time: "MW 3:00 - 4:15 PM",
+    location: "SEC 205",
+    description: "Introduction to reinforcement learning and sequential decision making. Covers Markov decision processes, Q-learning, policy gradient methods, and deep RL.",
+    requirements: ["CS 135", "MATH 61"],
+    ratings: {
+      overall: 4.7,
+      difficulty: 3.5
+    }
+  },
+  {
+    courseCode: "MATH 165",
+    courseName: "Numerical Analysis",
+    instructor: "James Adler",
+    time: "TTh 10:30 - 11:45 AM",
+    location: "Bromfield-Pearson 101",
+    description: "Study of numerical methods for solving mathematical problems. Topics include interpolation, numerical integration, solution of linear systems, and numerical solution of differential equations.",
+    requirements: ["MATH 70", "MATH 72"],
+    ratings: {
+      overall: 4.3,
+      difficulty: 3.7
+    }
+  }
+];
 
 interface Message {
   id: string;
@@ -35,14 +91,47 @@ const mockMessages: Message[] = [
     </li>
   </ol>
   <p>Consult your advisor for the latest guidelines.</p>
+  
       </div>
     ),
     sender: 'ai',
     timestamp: new Date('2025-02-08T17:30:00')
   },
-  //“Can I double count discrete math for both the natural science elective and my math major?”
+  // after class selection
   {
     id: '2',
+    content: (
+      <div>
+        <p>
+        Type yes to confirm class info on CS40, CS160, CS138, MATH165.
+          </p>
+
+      </div>
+    ),
+    sender: 'ai',
+    timestamp: new Date('2025-02-08T17:31:05')
+  },
+  
+  // classes
+  {
+    id: '2',
+    content: (
+      <div className="space-y-2">
+        {courses.map((course, index) => (
+          <CourseCard
+            key={index}
+            {...course}
+          />
+        ))}
+      </div>
+    ),
+    sender: 'ai',
+    timestamp: new Date('2025-02-08T17:31:05')
+  },
+
+  //“Can I double count discrete math for both the natural science elective and my math major?”
+  {
+    id: '3',
     content: "Yes. But be aware that you can only double count half of your math major credits toward your CS major.",
     sender: 'ai',
     timestamp: new Date('2025-02-08T17:30:05')
@@ -50,46 +139,47 @@ const mockMessages: Message[] = [
   //“Who should I talk to if I want to graduate early?”
   {
 
-    id: '3',
+    id: '4',
     content: (
       <div>
         <p>If you have questions or need guidance, you can reach out to John O'Keefe, the Senior Academic Advisor for Student Success at the School of Engineering.</p> 
-        <p>To book an appointment, click this link: 
-          <a href="https://calendly.com/john-okeefe">Book an appointment</a>
-          </p> 
+        {/* <p>Book an appointment here:  
+          <a href="https://calendly.com/john-okeefe" target='_blank'>Book an appointment</a>
+          </p>  */}
+          <button 
+    onClick={() => window.open('https://calendly.com/john-okeefe', '_blank')} 
+    style={{
+      backgroundColor: '#007BFF',
+      color: 'white',
+      border: 'none',
+      borderRadius: '5px',
+      padding: '10px 20px',
+      fontSize: '16px',
+      cursor: 'pointer',
+      transition: 'background-color 0.3s ease',
+    }}
+  >
+    Book an appointment
+  </button>
       </div>
     ),
     sender: 'ai',
     timestamp: new Date('2025-02-08T17:31:00')
   },
-  {
-    id: '4',
-    content: (
-      <div>
-        <p>Of course! The Broader Impacts section (suggested length: up to 1 page) should focus on:</p>
-        <ul className="list-disc pl-5">
-          <li>Education and Workforce Development</li>
-          <li>Broadening Participation</li>
-          <li>Collaboration</li>
-          <li>Knowledge Transfer</li>
-        </ul>
-      </div>
-    ),
-    sender: 'ai',
-    timestamp: new Date('2025-02-08T17:31:05')
-  },
   // “What classes do I need to take if I want to do an engineering management minor?
   {
-    id: '4',
+    id: '5',
     content: (
       <div>
-        <p>Of course! The Broader Impacts section (suggested length: up to 1 page) should focus on:</p>
-        <ul className="list-disc pl-5">
-          <li>Education and Workforce Development</li>
-          <li>Broadening Participation</li>
-          <li>Collaboration</li>
-          <li>Knowledge Transfer</li>
-        </ul>
+        <p>If you're planning to pursue an Engineering Management minor, you'll need to complete the following courses:</p>
+  <ul>
+    <li><strong>EM51:</strong> Engineering Management (Offered SP25)</li>
+    <li><strong>EM52:</strong> Technical &amp; Managerial Communication (Offered SP25)</li>
+    <li><strong>EM54:</strong> Engineering Leadership (Offered SP25)</li>
+    <li><strong>EM153:</strong> Management of Innovation (Offered SP25)</li>
+  </ul>
+  <br />
+  <p>Be sure to confirm course availability and any additional requirements with your academic advisor.</p>
       </div>
     ),
     sender: 'ai',
@@ -97,21 +187,22 @@ const mockMessages: Message[] = [
   },
   //What credits would CS116 satisfy?
   {
-    id: '4',
+    id: '6',
     content: (
       <div>
-        <p>Of course! The Broader Impacts section (suggested length: up to 1 page) should focus on:</p>
-        <ul className="list-disc pl-5">
-          <li>Education and Workforce Development</li>
-          <li>Broadening Participation</li>
-          <li>Collaboration</li>
-          <li>Knowledge Transfer</li>
-        </ul>
+        <p>
+    CS116 (which has a SOE‑Computing attribute) can count toward the following credit requirements:
+  </p>
+  <ul>
+    <li>System Elective</li>
+    <li>CS Social Context Elective (j)</li>
+    <li>General CS Elective (k)</li>
+  </ul>
       </div>
     ),
     sender: 'ai',
     timestamp: new Date('2025-02-08T17:31:05')
-  }
+  } 
 ];
 
 interface AISidebarProps {
@@ -247,7 +338,7 @@ export default function AISidebar({ onUpdateContent }: AISidebarProps) {
               className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`max-w-[80%] rounded-lg p-3 ${
+                className={`w-full rounded-lg p-3 ${
                   message.sender === 'user'
                     ? 'bg-blue-600 text-white'
                     : 'bg-gray-100 text-gray-900'
