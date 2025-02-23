@@ -10,55 +10,56 @@ const courses = [
     courseCode: "CS 40",
     courseName: "Machine Structure & Assembly",
     instructor: "Mark Sheldon",
-    time: "MWF 10:30 - 11:45 AM",
-    location: "TTC Auditorium",
-    description: "Introduction to computer architecture and assembly language. Topics include digital logic, processor organization, memory hierarchies, and assembly programming.",
-    requirements: ["CS 11", "CS15"],
+    time: "Tu, Th 1:30PM - 2:45PM",
+    location: "Robinson Wing TTC, Room 253",
+    description: "Structure of machine-level data and code including memory, cache, registers, and assembly language translation. High demand course.",
+    requirements: ["CS 11", "CS 15"],
     ratings: {
       overall: 4.2,
       difficulty: 3.8
     }
   },
   {
-    courseCode: "CS 160",
-    courseName: "Algorithms",
-    instructor: "Karen Edwards",
-    time: "TTh 1:30 - 2:45 PM",
-    location: "Joyce Cummings 270",
-    description: "Design and analysis of efficient algorithms. Topics include sorting, searching, dynamic programming, graph algorithms, NP-completeness.",
-    requirements: ["CS 15", "MATH 61"],
+    courseCode: "CS 171",
+    courseName: "Human Computer Interaction",
+    instructor: "Robert Jacob",
+    time: "Mo, We 1:30PM - 2:45PM",
+    location: "Joyce Cummings Center, 160",
+    description: "Introduction to human-computer interaction, focusing on designing and testing user interfaces and interaction methods.",
+    requirements: ["CS 15"],
     ratings: {
-      overall: 4.5,
-      difficulty: 4.0
+      overall: 4.0,
+      difficulty: 3.5
     }
   },
   {
     courseCode: "CS 138",
     courseName: "Reinforcement Learning",
-    instructor: "Michael Hughes",
-    time: "MW 3:00 - 4:15 PM",
-    location: "SEC 205",
-    description: "Introduction to reinforcement learning and sequential decision making. Covers Markov decision processes, Q-learning, policy gradient methods, and deep RL.",
-    requirements: ["CS 135", "MATH 61"],
+    instructor: "Jivko Sinapov",
+    time: "Mo, We 3:00PM - 4:15PM",
+    location: "Joyce Cummings Center, 160",
+    description: "Explores reinforcement learning techniques for agents in complex, uncertain environments. Topics include practical applications, software libraries, and advanced topics such as transfer and deep RL.",
+    requirements: ["CS 131", "CS 135"],
     ratings: {
-      overall: 4.7,
-      difficulty: 3.5
+      overall: 4.1,
+      difficulty: 3.9
     }
   },
   {
     courseCode: "MATH 165",
-    courseName: "Numerical Analysis",
-    instructor: "James Adler",
-    time: "TTh 10:30 - 11:45 AM",
-    location: "Bromfield-Pearson 101",
-    description: "Study of numerical methods for solving mathematical problems. Topics include interpolation, numerical integration, solution of linear systems, and numerical solution of differential equations.",
-    requirements: ["MATH 70", "MATH 72"],
+    courseName: "Probability",
+    instructor: "David Smyth",
+    time: "Tu, Th 3:00PM - 4:15PM",
+    location: "Joyce Cummings Center, 260",
+    description: "Covers probability theory including conditional probability, random variables, expectations, distributions, laws of large numbers, and the central limit theorem.",
+    requirements: [],
     ratings: {
       overall: 4.3,
-      difficulty: 3.7
+      difficulty: 4.0
     }
   }
 ];
+
 
 interface Message {
   id: string;
@@ -103,7 +104,7 @@ const mockMessages: Message[] = [
     content: (
       <div>
         <p>
-        Type yes to confirm class info on CS40, CS160, CS138, MATH165.
+        Type yes to confirm class info on CS40, CS171, CS138, MATH165.
           </p>
 
       </div>
