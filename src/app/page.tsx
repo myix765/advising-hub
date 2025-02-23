@@ -1,9 +1,11 @@
 import Sidenav from "./Sidenav";
+import Topnav from "./Topnav"
 
 export default function Home() {
   return (
     <div>
-      <Sidenav/>
+      <Topnav/>
+      {/* <Sidenav/> */}
     </div>
   );
 }
