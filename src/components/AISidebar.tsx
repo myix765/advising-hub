@@ -4,7 +4,9 @@ import { useEffect, useState, useRef } from 'react';
 import LoadingDots from './LoadingDots';
 import TypingAnimation from './TypingAnimation';
 import CourseCard from './CourseCard';
-import AIAuditClassList from './AIAuditClassList';
+import AIAuditClassList from './AuditCourseList';
+import { styled } from '@mui/material/styles';
+import { Box } from '@mui/material';
 
 const courses = [
   {
@@ -14,7 +16,7 @@ const courses = [
     time: "Tu, Th 1:30PM - 2:45PM",
     location: "Robinson Wing TTC, Room 253",
     description: "Structure of machine-level data and code including memory, cache, registers, and assembly language translation. High demand course.",
-    requirements: ["CS 11", "CS 15"],
+    requirements: ["CS11", "CS15"],
     ratings: {
       overall: 4.2,
       difficulty: 3.8
@@ -27,7 +29,7 @@ const courses = [
     time: "Mo, We 1:30PM - 2:45PM",
     location: "Joyce Cummings Center, 160",
     description: "Introduction to human-computer interaction, focusing on designing and testing user interfaces and interaction methods.",
-    requirements: ["CS 15"],
+    requirements: ["CS15"],
     ratings: {
       overall: 4.0,
       difficulty: 3.5
@@ -40,7 +42,7 @@ const courses = [
     time: "Mo, We 3:00PM - 4:15PM",
     location: "Joyce Cummings Center, 160",
     description: "Explores reinforcement learning techniques for agents in complex, uncertain environments. Topics include practical applications, software libraries, and advanced topics such as transfer and deep RL.",
-    requirements: ["CS 131", "CS 135"],
+    requirements: ["CS131", "CS135"],
     ratings: {
       overall: 4.1,
       difficulty: 3.9
@@ -99,56 +101,23 @@ interface Message {
 const mockMessages: Message[] = [
   {
     id: '6',
-    content: (
-      <AIAuditClassList courseList={courseList}/>
-    ),
+    content: "Hmm. That’s a very smart move. Here are a list of classes that you can take. Select classes you would like to add to your schedule:",
     sender: 'ai',
-    timestamp: new Date('2025-02-08T17:31:05')
+    timestamp: new Date()
   },
   {
-    // What classes should I take if I want to do robotics and fulfill my requirements?
-    id: '1',
+    id: '6',
     content: (
       <div>
-         <p>Follow a two‑step plan:</p>
-  <ol>
-    <li>
-      <strong>Core CS Courses:</strong>
-      <p>Complete required courses (CS 11, 15, 40, 61, 105, 160, 170, etc.).</p>
-    </li>
-    <li>
-      <strong>Robotics Electives:</strong>
-      <ul>
-        <li>CS 133: Human‑Robot Interaction</li>
-        <li>CS 141: Probabilistic Robotics</li>
-        <li>CS 139: AI &amp; Robotics Ethics</li>
-        <li>Other robotics/AI electives (e.g., CS 138: Reinforcement Learning)</li>
-      </ul>
-      <p>Finish with a robotics capstone (CS 97/98 or CS 197).</p>
-    </li>
-  </ol>
-  <p>Consult your advisor for the latest guidelines.</p>
-  
+        <AIAuditClassList courseList={courseList} />
+        <p className='mt-4'>When you are finished selecting, please select the "Finished selecting" button. Or type "Yes" to confirm selection.</p>
       </div>
     ),
     sender: 'ai',
-    timestamp: new Date('2025-02-08T17:30:00')
+    timestamp: new Date()
   },
   // after class selection
-  {
-    id: '2',
-    content: (
-      <div>
-        <p>
-        Type yes to confirm class info on CS40, CS171, CS138, MATH165.
-          </p>
 
-      </div>
-    ),
-    sender: 'ai',
-    timestamp: new Date('2025-02-08T17:31:05')
-  },
-  
   // classes
   {
     id: '2',
@@ -163,15 +132,42 @@ const mockMessages: Message[] = [
       </div>
     ),
     sender: 'ai',
-    timestamp: new Date('2025-02-08T17:31:05')
+    timestamp: new Date()
   },
-
+  {
+    // What classes should I take if I want to do robotics and fulfill my requirements?
+    id: '1',
+    content: (
+      <div>
+        <p className='mb-2'>Follow a two‑step plan:</p>
+        <ol>
+          <li className='mb-2'>
+            <strong>Core CS Courses:</strong>
+            <p>Complete required courses (CS 11, 15, 40, 61, 105, 160, 170, etc.).</p>
+          </li>
+          <li>
+            <strong>Robotics Electives:</strong>
+            <ul>
+              <li>CS 133: Human‑Robot Interaction</li>
+              <li>CS 141: Probabilistic Robotics</li>
+              <li>CS 139: AI &amp; Robotics Ethics</li>
+              <li>Other robotics/AI electives (e.g., CS 138: Reinforcement Learning)</li>
+            </ul>
+            <p>Finish with a robotics capstone (CS 97/98 or CS 197).</p>
+          </li>
+        </ol>
+        <p className='mt-4'>Consult your advisor for the latest guidelines.</p>
+      </div>
+    ),
+    sender: 'ai',
+    timestamp: new Date()
+  },
   //“Can I double count discrete math for both the natural science elective and my math major?”
   {
     id: '3',
     content: "Yes. But be aware that you can only double count half of your math major credits toward your CS major.",
     sender: 'ai',
-    timestamp: new Date('2025-02-08T17:30:05')
+    timestamp: new Date()
   },
   //“Who should I talk to if I want to graduate early?”
   {
@@ -179,29 +175,29 @@ const mockMessages: Message[] = [
     id: '4',
     content: (
       <div>
-        <p>If you have questions or need guidance, you can reach out to John O'Keefe, the Senior Academic Advisor for Student Success at the School of Engineering.</p> 
+        <p>If you have questions or need guidance, you can reach out to John O'Keefe, the Senior Academic Advisor for Student Success at the School of Engineering.</p>
         {/* <p>Book an appointment here:  
           <a href="https://calendly.com/john-okeefe" target='_blank'>Book an appointment</a>
           </p>  */}
-          <button 
-    onClick={() => window.open('https://calendly.com/john-okeefe', '_blank')} 
-    style={{
-      backgroundColor: '#007BFF',
-      color: 'white',
-      border: 'none',
-      borderRadius: '5px',
-      padding: '10px 20px',
-      fontSize: '16px',
-      cursor: 'pointer',
-      transition: 'background-color 0.3s ease',
-    }}
-  >
-    Book an appointment
-  </button>
+        <button
+          onClick={() => window.open('https://calendly.com/john-okeefe', '_blank')}
+          style={{
+            backgroundColor: '#007BFF',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            padding: '10px 20px',
+            fontSize: '16px',
+            cursor: 'pointer',
+            transition: 'background-color 0.3s ease',
+          }}
+        >
+          Book an appointment
+        </button>
       </div>
     ),
     sender: 'ai',
-    timestamp: new Date('2025-02-08T17:31:00')
+    timestamp: new Date()
   },
   // “What classes do I need to take if I want to do an engineering management minor?
   {
@@ -209,18 +205,18 @@ const mockMessages: Message[] = [
     content: (
       <div>
         <p>If you're planning to pursue an Engineering Management minor, you'll need to complete the following courses:</p>
-  <ul>
-    <li><strong>EM51:</strong> Engineering Management (Offered SP25)</li>
-    <li><strong>EM52:</strong> Technical &amp; Managerial Communication (Offered SP25)</li>
-    <li><strong>EM54:</strong> Engineering Leadership (Offered SP25)</li>
-    <li><strong>EM153:</strong> Management of Innovation (Offered SP25)</li>
-  </ul>
-  <br />
-  <p>Be sure to confirm course availability and any additional requirements with your academic advisor.</p>
+        <ul>
+          <li><strong>EM51:</strong> Engineering Management (Offered SP25)</li>
+          <li><strong>EM52:</strong> Technical &amp; Managerial Communication (Offered SP25)</li>
+          <li><strong>EM54:</strong> Engineering Leadership (Offered SP25)</li>
+          <li><strong>EM153:</strong> Management of Innovation (Offered SP25)</li>
+        </ul>
+        <br />
+        <p>Be sure to confirm course availability and any additional requirements with your academic advisor.</p>
       </div>
     ),
     sender: 'ai',
-    timestamp: new Date('2025-02-08T17:31:05')
+    timestamp: new Date()
   },
   //What credits would CS116 satisfy?
   {
@@ -228,18 +224,18 @@ const mockMessages: Message[] = [
     content: (
       <div>
         <p>
-    CS116 (which has a SOE‑Computing attribute) can count toward the following credit requirements:
-  </p>
-  <ul>
-    <li>System Elective</li>
-    <li>CS Social Context Elective (j)</li>
-    <li>General CS Elective (k)</li>
-  </ul>
+          CS116 (which has a SOE‑Computing attribute) can count toward the following credit requirements:
+        </p>
+        <ul>
+          <li>System Elective</li>
+          <li>CS Social Context Elective (j)</li>
+          <li>General CS Elective (k)</li>
+        </ul>
       </div>
     ),
     sender: 'ai',
-    timestamp: new Date('2025-02-08T17:31:05')
-  } 
+    timestamp: new Date()
+  }
 ];
 
 interface AISidebarProps {
@@ -412,12 +408,31 @@ const AISidebar: React.FC<AISidebarProps> = ({ selectedCourses, onUpdateContent 
     }
   }, [chatHistory]);
 
+  const ScrollableBox = styled(Box)({
+    overflowY: 'auto',
+    '&::-webkit-scrollbar': {
+      width: '6px',
+      opacity: 0,
+      transition: 'opacity 0.3s',
+    },
+    '&:hover::-webkit-scrollbar': {
+      opacity: 1,
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: '#ccc',
+      borderRadius: '3px',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      backgroundColor: '#aaa',
+    },
+  });
+
   return (
-    <div className="h-full flex flex-col bg-white">
+    <div className="h-full flex flex-col bg-white mx-10">
       {/* Sidebar Header */}
       <div className="h-14 border-b flex items-center justify-between px-4 bg-white">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center">
+          <div className="w-6 h-6 bg-indigo-600 rounded flex items-center justify-center">
             <span className="text-white text-xs">AI</span>
           </div>
           <h2 className="text-sm font-medium text-gray-900">Advisor</h2>
@@ -430,23 +445,22 @@ const AISidebar: React.FC<AISidebarProps> = ({ selectedCourses, onUpdateContent 
 
       {/* Main Content Area with Chat History */}
       <div className="flex-1 overflow-hidden relative">
-        <div className="h-full overflow-auto p-3 space-y-3">
+        <ScrollableBox className="h-full p-3 space-y-3">
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+              className={`flex ${message.sender === 'user' ? 'justify-end ml-20' : 'justify-start'}`}
             >
               <div
-                className={`w-full rounded-lg p-3 ${
-                  message.sender === 'user'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-900'
-                }`}
+                className={`w-full rounded-2xl p-3 ${message.sender === 'user'
+                  ? 'px-6 bg-violet-200 text-black'
+                  : 'text-gray-900'
+                  }`}
               >
                 <div className="text-sm whitespace-pre-wrap break-words">
                   {message.content}
                 </div>
-                <p className="text-xs mt-1 opacity-70">
+                <p className={`text-xs mt-1 opacity-40 ${message.sender === 'user' ? 'text-right mr-[-8px]' : 'text-left'}`}>
                   {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </p>
               </div>
@@ -479,7 +493,7 @@ const AISidebar: React.FC<AISidebarProps> = ({ selectedCourses, onUpdateContent 
             </div>
           )}
           <div ref={messagesEndRef} />
-        </div>
+        </ScrollableBox>
       </div>
 
       {/* Input Area */}
@@ -500,26 +514,26 @@ const AISidebar: React.FC<AISidebarProps> = ({ selectedCourses, onUpdateContent 
                   handleSend();
                 }
               }}
-              placeholder="Ask anything..."
+              placeholder="Ask about your schedule"
               rows={1}
               style={{ resize: 'none', minHeight: '36px', height: 'auto' }}
-              className="w-full pl-3 pr-3 py-1.5 text-sm border border-gray-200 rounded-md text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 overflow-y-auto"
+              className="w-full pl-6 pr-3 py-1.75 text-sm border border-gray-200 rounded-full text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 overflow-y-auto"
             />
           </div>
           <button
             onClick={handleSend}
             disabled={isLoading || isTyping || !inputValue.trim()}
-            className="p-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            className="bg-violet-100 text-indigo-800 rounded-full hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center w-10 h-10"
             aria-label="Send message"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M5 12h14m-7-7l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M12 19V5m-7 7l7-7 7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export default AISidebar;
