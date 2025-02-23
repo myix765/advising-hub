@@ -1,0 +1,64 @@
+[
+    [
+        {
+            "courseCode": "CS-0011",
+            "section": "01-LEC"
+        },
+        {
+            "courseCode": "ANTH-0078",
+            "section": "01-LEC"
+        },
+        {
+            "courseCode": "ENG-0001",
+            "section": "02-LEC"
+        },
+        {
+            "courseCode": "MATH-0034",
+            "section": "02-LEC"
+        },
+        {
+            "courseCode": "MATH-0034",
+            "section": "R01-RCT"
+        }
+    ],
+    [
+        {
+            "courseCode": "CS-0015",
+            "section": "01-LEC"
+        },
+        {
+            "courseCode": "CS-0061",
+            "section": "01-LEC"
+        },
+        {
+            "courseCode": "MATH-0042",
+            "section": "01-LEC"
+        },
+        {
+            "courseCode": "MATH-0042",
+            "section": "R02-RCT"
+        }
+    ],
+    [
+        {
+            "courseCode": "CS-0160",
+            "section": "01-LEC"
+        },
+        {
+            "courseCode": "CS-0160",
+            "section": "RA-RCT"
+        },
+        {
+            "courseCode": "CS-0150",
+            "section": "02-LEC"
+        },
+        {
+            "courseCode": "MATH-0070",
+            "section": "02-LEC"
+        },
+        {
+            "courseCode": "MATH-0070",
+            "section": "R04-RCT"
+        }
+    ]
+]

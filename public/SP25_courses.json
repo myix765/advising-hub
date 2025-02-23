@@ -29318,5 +29318,126 @@
         "status": ""
       }
     ]
+  },
+  {
+    "courseCode": "MATH-0034",
+    "courseName": "Calculus II",
+    "description": "Applications of the integral, techniques of integration, separable differential equations, improper integrals. Sequences, series, convergence tests, Taylor series. Polar coordinates, complex numbers. Students may count only one of MATH 34 and MATH 36 for credit. Recommendations: MATH 32.",
+    "sections": [
+      {
+        "section": "01-LEC",
+        "classNo": "20844",
+        "classTime": "Mo, We 1:30PM - 2:45PM",
+        "location": "Joyce Cummings Center, 270",
+        "session": "Regular",
+        "faculty": "Ian Manly",
+        "credits": "4",
+        "status": ""
+      },
+      {
+        "section": "02-LEC",
+        "classNo": "21396",
+        "classTime": "Mo, We 4:30PM - 5:45PM",
+        "location": "Joyce Cummings Center, 270",
+        "session": "Regular",
+        "faculty": "Ian Manly",
+        "credits": "4",
+        "status": ""
+      },
+      {
+        "section": "R01-RCT",
+        "classNo": "21397",
+        "classTime": "Th 9:00AM - 10:15AM",
+        "location": "Bromfield-Pearson, Room 007",
+        "session": "Regular",
+        "faculty": "Ian Manly",
+        "credits": "0",
+        "status": ""
+      },
+      {
+        "section": "R02-RCT",
+        "classNo": "21398",
+        "classTime": "Th 12:00PM - 1:15PM",
+        "location": "Braker Hall, Room 226",
+        "session": "Regular",
+        "faculty": "David De Frutos Ostrander",
+        "credits": "0",
+        "status": ""
+      }
+    ]
+  },
+  {
+    "courseCode": "MATH-0042",
+    "courseName": "Calculus III",
+    "description": "Vectors in two and three dimensions, applications of the derivative of vector-valued functions of a single variable. Functions of several variables, continuity, partial derivatives, the gradient, directional derivatives. Multiple integrals and their applications. Line integrals, Green's theorem, divergence theorem, Stokes’ theorem. Prerequisite: MATH 34 or 39.",
+    "sections": [
+      {
+        "section": "01-LEC",
+        "classNo": "20846",
+        "classTime": "Mo, We 3:00PM - 4:15PM",
+        "location": "Pearson Hall, Room 104",
+        "session": "Regular",
+        "faculty": "Montserrat Teixidor I Bigas",
+        "credits": "4",
+        "status": ""
+      },
+      {
+        "section": "R01-RCT",
+        "classNo": "21412",
+        "classTime": "Th 9:00AM - 10:15AM",
+        "location": "Joyce Cummings Center, 076",
+        "session": "Regular",
+        "faculty": "Montserrat Teixidor I Bigas",
+        "credits": "0",
+        "status": ""
+      },
+      {
+        "section": "R02-RCT",
+        "classNo": "21413",
+        "classTime": "Th 6:00PM - 7:15PM",
+        "location": "Joyce Cummings Center, 074",
+        "session": "Regular",
+        "faculty": "Ishaan Sood",
+        "credits": "0",
+        "status": ""
+      }
+    ]
+  },
+  {
+    "courseCode": "MATH-0070",
+    "courseName": "Linear Algebra",
+    "description": "Introduction to the theory of vector spaces and linear transformations over the real or complex numbers, including linear independence, dimension, matrix multiplication, similarity and change of basis, inner products, eigenvalues and eigenvectors, and some applications. Recommendations: MATH 34 or 39 or permission of instructor. Students may count only one of MATH 70 and MATH 72 for credit.",
+    "sections": [
+      {
+        "section": "01-LEC",
+        "classNo": "21130",
+        "classTime": "Mo, We 3:00PM - 4:15PM",
+        "location": "Pearson Hall, Room 104",
+        "session": "Regular",
+        "faculty": "Emily Meehan",
+        "credits": "4",
+        "status": ""
+      },
+      {
+        "section": "02-LEC",
+        "classNo": "24717",
+        "classTime": "Mo, We 6:00PM - 7:15PM",
+        "location": "Joyce Cummings Center, 180",
+        "session": "Regular",
+        "faculty": "Alejandro Coyoli",
+        "credits": "4",
+        "status": ""
+      },
+      {
+        "section": "R04-RCT",
+        "classNo": "21435",
+        "classTime": "Fr 10:30AM - 11:45AM",
+        "location": "Joyce Cummings Center, 074",
+        "session": "Regular",
+        "faculty": "Corey Bregman",
+        "credits": "0",
+        "status": ""
+      }
+    ]
   }
 ]
