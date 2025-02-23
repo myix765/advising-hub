@@ -3,11 +3,54 @@
 import AISidebar from "@/components/AISidebar";
 import Navbar from "@/components/Navbar";
 import ReqBlock from "@/components/ReqBlock";
-import { AuditCourseProps } from "@/types/AIMessage";
-import { useState } from "react";
+
+interface Course {
+    courseCode: string;
+    courseName: string;
+    credits: number;
+    status: string;
+}
+
+interface TotalCoursesProps {
+    header: string;
+    courses: Course[];
+}
+
+const totalCoursesExample: TotalCoursesProps[] = [
+    {
+        header: "Required Courses",
+        courses: [
+            { courseCode: "CS 15", courseName: "Data Structures", credits: 3, status: "completed" },
+            { courseCode: "CS 40", courseName: "Mach. Struct. & Assembly Lang.", credits: 3, status: "completed" },
+            { courseCode: "CS 105", courseName: "Programming Languages", credits: 3, status: "completed" },
+            { courseCode: "CS 160", courseName: "Algorithms", credits: 3, status: "completed" },
+            { courseCode: "CS 170", courseName: "Computation Theory", credits: 3, status: "completed" }
+        ]
+    },
+    {
+        header: "Three CS electives, numbered above CS 15",
+        courses: [
+            { courseCode: "CS 116", courseName: "Intro to Security", credits: 3, status: "completed" },
+            { courseCode: "Elective 2", courseName: "", credits: 0, status: "pending" },
+            { courseCode: "Elective 3", courseName: "", credits: 0, status: "pending" }
+        ]
+    },
+    {
+        header: "Two required mathematics courses",
+        courses: [
+            { courseCode: "MATH 34", courseName: "Calculus II or 39 Honors", credits: 3, status: "completed" },
+            { courseCode: "CS/MATH 61", courseName: "Discrete Mathematics", credits: 3, status: "completed" }
+        ]
+    }
+];
+
+const completedCoursesExample: string[] = ["CS 15", "CS 40", "MATH 34"];
+const inProg: string[] = ["CS 105", "CS/MATH 61"];
+
+
+const majors = ["Computer Science Major Requirements"]
 
 const DegreeAudit = () => {
-    const [selectedCourses, setSelectedCourses] = useState<Set<AuditCourseProps>>(new Set());
 
     const handleUpdateContent = (_content: string) => {
         // Implement content update logic here
@@ -15,24 +58,23 @@ const DegreeAudit = () => {
 
     return (
         <div>
-            <div className="fixed"><Navbar/></div>
-            <div className="grid grid-cols-[70%_30%] pt-20"> {/* Container for content */}
-                <div className="grid grid-cols-2 gap-4 max-w-max max-h-max h-screen p-8">                    
-                    <ReqBlock creditType="Math/NS" totalCourses={6} coursesCompleted={5} />
-                    <ReqBlock creditType="CS Core" totalCourses={4} coursesCompleted={3} />
-                    <ReqBlock creditType="HASS" totalCourses={12} coursesCompleted={6} />
-                    <ReqBlock creditType="Engineering" totalCourses={8} coursesCompleted={0} />
-                    {/* Add more ReqBlocks as needed */}
-                </div>
-                <div className="h-screen border-l">
-                    <AISidebar 
-                        selectedCourses={selectedCourses}
-                        onUpdateContent={handleUpdateContent} 
+            <div className="fixed w-full z-10"><Navbar /></div>
+            <div className="grid grid-cols-[70%_30%]"> {/* Container for content */}
+                <label className="mx-12 mt-30">
+                    <h3 className="font-bold">Degree Audit</h3>
+                    <label className="text-xs">Keep track of your 4 year college education level</label>
+                    <ReqBlock totalCourses={totalCoursesExample} coursesCompleted={completedCoursesExample} coursesIP={inProg} sectionTitle={majors[0]} />
+                    <ReqBlock totalCourses={totalCoursesExample} coursesCompleted={completedCoursesExample} coursesIP={inProg} sectionTitle={majors[0]} />
+                    <ReqBlock totalCourses={totalCoursesExample} coursesCompleted={completedCoursesExample} coursesIP={inProg} sectionTitle={majors[0]} />
+                </label>
+                <div className="mt-20 border-l" style={{ height: 'calc(100vh - 5rem)' }}>
+                    <AISidebar
+                        onUpdateContent={handleUpdateContent}
                     />
                 </div>
             </div>
         </div>
     );
-} 
+}
 
 export default DegreeAudit;

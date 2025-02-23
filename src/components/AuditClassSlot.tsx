@@ -22,7 +22,10 @@ const AIClassSlot: React.FC<AIClassSlotProps> = ({ courseCode, courseName, attri
 
         // Notify parent component if callback exists
         if (onToggle) {
-            onToggle({ courseCode, courseName, attributes, credits }, newState);
+            onToggle({
+                courseCode, courseName, attributes, credits,
+                name: undefined
+            }, newState);
         }
     }, [isSelected, onToggle, courseCode, courseName, attributes, credits]);
 

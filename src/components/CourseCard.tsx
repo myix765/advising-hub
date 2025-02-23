@@ -38,7 +38,7 @@ const CourseCard = ({
                 <path d="M20 6L9 17l-5-5" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <h2 className="text-xs font-semibold text-gray-900 ml-2">
+            <h2 className="text-xs font-semibold text-gray-900 ml-2 ">
               {courseCode} {courseName}
             </h2>
           </div>

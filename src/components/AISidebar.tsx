@@ -239,11 +239,10 @@ const mockMessages: Message[] = [
 ];
 
 interface AISidebarProps {
-  selectedCourses: Set<AuditCourseProps>;
   onUpdateContent: (content: string) => void;
 }
 
-const AISidebar: React.FC<AISidebarProps> = ({ selectedCourses, onUpdateContent }) => {
+const AISidebar: React.FC<AISidebarProps> = ({ onUpdateContent }) => {
   const [messages, setMessages] = useState<Message[]>(false ? mockMessages : []);
   // const [activeTab, setActiveTab] = useState('suggestions');
   const [chatResponse, setChatResponse] = useState("");
