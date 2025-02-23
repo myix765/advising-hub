@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+===============================================================================
+Alice
+================================================================================
+Created by: Scarlet Guard
+Presented at JumboHack 2025 under the Education track.
 
-## Getting Started
 
-First, run the development server:
+Team Member Contributions:
+    Lydia Chen: Developed degree auditing page
+    Sarah Jun: Designer and marketing
+    Megan Yi: Developed scheduling and navigation
+    Helena Fu: Developed AI messaging feature
+    Jessie Katz: Developed scheduling and navigation bar
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+ACKNOWLEDGEMENTS
+Next.js, GPT-4o API, Tailwind CSS
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+REFLECTION
+<What motivated your team to choose this project?>
+Tufts SIS **sucks**. Every Tufts student knows the frustration of navigating SIS, consulting multiple advisors, and relying on a messy Google Sheet just to understand what’s needed to graduate. The system is convoluted, making it difficult for students and advisors to stay aligned on student goals. Not to mention the added pressure of class enrollment season and the challenge of tracking requirements. We knew there had to be a better way—so we built Alice.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+<Potential future work/improvements?>
+Improve frontend architecture and comments for code readability/modularity.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+<What is a challenge you encountered while making this?>
+User experience: Designing an interface that is both easy to navigate while displaying necessary information.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+<What is a fun or interesting experience you had with another hacker?>
+Talking about when the snacks were going to come out.
