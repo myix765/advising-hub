@@ -67,12 +67,14 @@ const DegreeAudit = () => {
                     <ReqBlock totalCourses={totalCoursesExample} coursesCompleted={completedCoursesExample} coursesIP={inProg} sectionTitle={majors[0]} />
                     <ReqBlock totalCourses={totalCoursesExample} coursesCompleted={completedCoursesExample} coursesIP={inProg} sectionTitle={majors[0]} />
                 </label>
-                <div className="mt-20 border-l" style={{ height: 'calc(100vh - 5rem)' }}>
+            <div className="mt-20 border-l" style={{ height: 'calc(100vh - 5rem)' }}>
                     <AISidebar
                         onUpdateContent={handleUpdateContent}
                     />
                 </div>
+                
             </div>
+            
         </div>
     );
 }

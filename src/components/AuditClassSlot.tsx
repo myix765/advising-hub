@@ -24,7 +24,6 @@ const AIClassSlot: React.FC<AIClassSlotProps> = ({ courseCode, courseName, attri
         if (onToggle) {
             onToggle({
                 courseCode, courseName, attributes, credits,
-                name: undefined
             }, newState);
         }
     }, [isSelected, onToggle, courseCode, courseName, attributes, credits]);

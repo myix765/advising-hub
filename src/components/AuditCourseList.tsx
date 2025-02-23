@@ -12,8 +12,7 @@ const AIAuditClassList: React.FC<{ courseList: AuditCourseProps[], onFinishSelec
                             courseCode={course.courseCode}
                             courseName={course.courseName}
                             attributes={course.attributes}
-                            credits={course.credits}
-                            name={undefined} />
+                            credits={course.credits} />
                     ))}
                 </div>
                 <div className="flex justify-between mt-3 mx-2">
