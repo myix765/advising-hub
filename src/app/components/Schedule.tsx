@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react";
-import { MdArrowBackIos, MdArrowForwardIos } from "react-icons/md";
+import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -43,8 +43,6 @@ const Schedule = ({
         return ((hour * 4 - 26) + Math.floor(minutes / 15));
     }
 
-
-
     // splits sections and different days into individual classes
     const formattedCourses = courseList.flatMap(course => {
         const sectionsList = course.sections.map(section => ({
@@ -62,6 +60,10 @@ const Schedule = ({
         }))
         return sectionsList;
     }).flatMap(course => {
+        if (course.classTime === "Time Not Specified") {
+            return [];
+        }
+
         const days = course.classTime.split(", ").flatMap(day => {
             return [day.substring(0, 2).trim(), day.substring(2, day.length).trim()].filter(str => str !== "");
         });
@@ -78,15 +80,28 @@ const Schedule = ({
             return null;
         }).filter((course) => course !== null);
     })
+    console.log(formattedCourses)
 
     return (
-        <div className="flex flex-col p-8">
+        <div className="flex flex-col p-6">
             {/* schedule nav */}
-            <div className="flex justify-between">
-                <div className="flex justify-between w-48">
-                    <button onClick={() => setCurrTermIndex(currTermIndex - 1)} disabled={currTermIndex <= 0}><MdArrowBackIos /></button>
-                    <h1 className="text-left my-8 text-xl">{terms[currTermIndex]}</h1>
-                    <button onClick={() => setCurrTermIndex(currTermIndex + 1)} disabled={currTermIndex >= terms.length - 1}><MdArrowForwardIos /></button>
+            <div className="flex justify-between items-center mb-6">
+                <div className="flex justify-between w-52 items-center">
+                    <button
+                        onClick={() => setCurrTermIndex(currTermIndex - 1)}
+                        disabled={currTermIndex <= 0}
+                        className="hover:bg-gray-200 transition-colors duration-300 ease-in-out rounded-xl h-fit py-3 px-2"
+                    >
+                        <MdArrowBackIosNew />
+                    </button>
+                    <h1 className="text-left text-xl">{terms[currTermIndex]}</h1>
+                    <button
+                        onClick={() => setCurrTermIndex(currTermIndex + 1)}
+                        disabled={currTermIndex >= terms.length - 1}
+                        className="hover:bg-gray-200 transition-colors duration-300 ease-in-out rounded-xl h-fit py-3 px-2"
+                    >
+                        <MdArrowForwardIos />
+                    </button>
                 </div>
 
                 <div className="flex items-center gap-x-4">
@@ -117,7 +132,7 @@ const Schedule = ({
             </div>
 
             {/* schedule layout */}
-            <div className={`grid grid-cols-[1fr_repeat(5,_3fr)] grid-rows-[auto_repeat(60,1rem)] max-w-full box-border`}>
+            <div className={`grid grid-cols-[1fr_repeat(5,_3fr)] grid-rows-[auto_repeat(60,1rem)] max-w-full box-border pr-8 overflow-x-scroll`}>
                 {/* display days */}
                 {days.map(day => (
                     <React.Fragment key={day}>
