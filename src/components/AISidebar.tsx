@@ -9,20 +9,20 @@ import { styled } from '@mui/material/styles';
 import { Box } from '@mui/material';
 
 const courses = [
-  {
-    courseCode: "CS 40",
-    courseName: "Machine Structure & Assembly",
-    instructor: "Mark Sheldon",
-    time: "TTh 1:30PM - 2:45PM",
-    location: "Robinson Wing TTC, Room 253",
-    description: "Structure of machine-level data and code including memory, cache, registers, and assembly language translation. High demand course.",
-    requirements: ["CS 11", "CS 15"],
-    credits: 5,
-    ratings: {
-      overall: 4.2,
-      difficulty: 5
-    }
-  },
+  // {
+  //   courseCode: "CS 40",
+  //   courseName: "Machine Structure & Assembly",
+  //   instructor: "Mark Sheldon",
+  //   time: "TTh 1:30PM - 2:45PM",
+  //   location: "Robinson Wing TTC, Room 253",
+  //   description: "Structure of machine-level data and code including memory, cache, registers, and assembly language translation. High demand course.",
+  //   requirements: ["CS 11", "CS 15"],
+  //   credits: 5,
+  //   ratings: {
+  //     overall: 4.2,
+  //     difficulty: 5
+  //   }
+  // },
   {
     courseCode: "CS 171",
     courseName: "Human Computer Interaction",
@@ -105,6 +105,139 @@ interface Message {
   timestamp: Date;
 }
 
+interface AISidebarProps {
+  onUpdateContent: (content: string) => void;
+}
+
+const AISidebar: React.FC<AISidebarProps> = ({ onUpdateContent }) => {
+  const [messages, setMessages] = useState<Message[]>([]);
+  // const [activeTab, setActiveTab] = useState('suggestions');
+  const [chatResponse, setChatResponse] = useState("");
+  const [inputValue, setInputValue] = useState(""); // User input
+  const [chatHistory, setChatHistory] = useState<string[]>([]);
+  const chatEndRef = useRef<HTMLDivElement | null>(null);
+  // const [selectedSuggestion, setSelectedSuggestion] = useState<any>(null);
+  const [isTyping, setIsTyping] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [responseText, setResponseText] = useState('');
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [mockMessageIndex, setMockMessageIndex] = useState(0);
+
+  const [hasAppendedMessages, setHasAppendedMessages] = useState(false);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isTyping]);
+
+  const showTypingAnimation = (message: React.ReactNode, onComplete?: () => void) => {
+    setIsTyping(true);
+    setResponseText(message as string);
+    // The typing animation will call onComplete when done
+  };
+
+  async function handleAPISend() {
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: inputValue }),
+      });
+
+      setTimeout(() => {
+        setIsLoading(false);
+        setIsTyping(true);
+      }, 1500);
+
+      const data = await res.json();
+      const answer = data.answer || data.error;
+      setChatResponse(answer);
+      setChatHistory((prev) => [...prev, answer]);
+      setInputValue("");
+    } catch (error) {
+      console.error("Error calling AI API:", error);
+      const errorMessage = "Error: " + (error as Error).message;
+      setChatResponse(errorMessage);
+      setChatHistory((prev) => [...prev, errorMessage]);
+    }
+  }
+  const handleFinishSelecting = () => {
+    setTimeout(() => {
+      setIsLoading(false);
+      const nextIndex = mockMessageIndex + 1; // Increment first
+      console.log(nextIndex);
+      if (nextIndex < mockMessages.length) {
+        const nextMockMessage = mockMessages[nextIndex]; // Get the next message
+        const mockMessage: Message = {
+          id: (Date.now() + nextIndex).toString(),
+          content: nextMockMessage.content,
+          sender: 'ai',
+          timestamp: new Date()
+        };
+  
+        showTypingAnimation(nextMockMessage.content, () => {
+          setMessages((prev) => [...prev, mockMessage]);
+        });
+  
+        setMockMessageIndex(prevIndex => prevIndex + 1); // Update state after setting the message
+        console.log(mockMessageIndex);
+      }
+    }, 1500);
+  };
+
+  const handleSend = () => {
+    if (!inputValue.trim() || isTyping) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      content: inputValue.trim(),
+      sender: 'user',
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setIsLoading(true);
+    setInputValue('');
+
+    if (inputRef.current) {
+      inputRef.current.style.height = '36px';
+    }
+
+    setTimeout(() => {
+      setIsLoading(false);
+      if (mockMessageIndex < mockMessages.length) {
+        if (mockMessageIndex == 1) {
+          console.log(mockMessageIndex);
+          setMockMessageIndex(mockMessageIndex + 1);
+          console.log(mockMessageIndex);
+          
+        }
+        const nextMockMessage = mockMessages[mockMessageIndex];
+        const mockMessage: Message = {
+          id: (Date.now() + mockMessageIndex).toString(),
+          content: nextMockMessage.content,
+          sender: 'ai',
+          timestamp: new Date()
+        };
+
+        showTypingAnimation(nextMockMessage.content, () => {
+          setMessages(prev => [...prev, mockMessage]);
+        });
+
+        setMockMessageIndex(prevIndex => prevIndex + 1);
+      }
+    }, 1500);
+
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+  
 const mockMessages: Message[] = [
   {
     id: '6',
@@ -112,8 +245,7 @@ const mockMessages: Message[] = [
       <div>
         <p>Here are a list of classes that you can take. Select classes you would like to add to your schedule:</p>
         <br />
-        <AIAuditClassList courseList={courseList} />
-        <p className='mt-4'>When you are finished selecting, please select the "Finished selecting" button. Or type "Yes" to confirm selection.</p>
+        <AIAuditClassList courseList={courseList} onFinishSelecting={handleFinishSelecting}/>
       </div>
     ),
     sender: 'ai',
@@ -213,110 +345,6 @@ const mockMessages: Message[] = [
     timestamp: new Date()
   }
 ];
-
-interface AISidebarProps {
-  onUpdateContent: (content: string) => void;
-}
-
-const AISidebar: React.FC<AISidebarProps> = ({ onUpdateContent }) => {
-  const [messages, setMessages] = useState<Message[]>(false ? mockMessages : []);
-  // const [activeTab, setActiveTab] = useState('suggestions');
-  const [chatResponse, setChatResponse] = useState("");
-  const [inputValue, setInputValue] = useState(""); // User input
-  const [chatHistory, setChatHistory] = useState<string[]>([]);
-  const chatEndRef = useRef<HTMLDivElement | null>(null);
-  // const [selectedSuggestion, setSelectedSuggestion] = useState<any>(null);
-  const [isTyping, setIsTyping] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [responseText, setResponseText] = useState('');
-  const inputRef = useRef<HTMLTextAreaElement | null>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [mockMessageIndex, setMockMessageIndex] = useState(0);
-
-  const [hasAppendedMessages, setHasAppendedMessages] = useState(false);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, isTyping]);
-
-  const showTypingAnimation = (message: React.ReactNode, onComplete?: () => void) => {
-    setIsTyping(true);
-    setResponseText(message as string);
-    // The typing animation will call onComplete when done
-  };
-
-  async function handleAPISend() {
-    setIsLoading(true);
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: inputValue }),
-      });
-
-      setTimeout(() => {
-        setIsLoading(false);
-        setIsTyping(true);
-      }, 1500);
-
-      const data = await res.json();
-      const answer = data.answer || data.error;
-      setChatResponse(answer);
-      setChatHistory((prev) => [...prev, answer]);
-      setInputValue("");
-    } catch (error) {
-      console.error("Error calling AI API:", error);
-      const errorMessage = "Error: " + (error as Error).message;
-      setChatResponse(errorMessage);
-      setChatHistory((prev) => [...prev, errorMessage]);
-    }
-  }
-
-  const handleSend = () => {
-    if (!inputValue.trim() || isTyping) return;
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      content: inputValue.trim(),
-      sender: 'user',
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-    setIsLoading(true);
-    setInputValue('');
-
-    if (inputRef.current) {
-      inputRef.current.style.height = '36px';
-    }
-
-    setTimeout(() => {
-      setIsLoading(false);
-      if (mockMessageIndex < mockMessages.length) {
-        const nextMockMessage = mockMessages[mockMessageIndex];
-        const mockMessage: Message = {
-          id: (Date.now() + mockMessageIndex).toString(),
-          content: nextMockMessage.content,
-          sender: 'ai',
-          timestamp: new Date()
-        };
-
-        showTypingAnimation(nextMockMessage.content, () => {
-          setMessages(prev => [...prev, mockMessage]);
-        });
-
-        setMockMessageIndex(prevIndex => prevIndex + 1);
-      }
-    }, 1500);
-
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  };
 
   return (
     <div className="h-full flex flex-col bg-white mx-10">
