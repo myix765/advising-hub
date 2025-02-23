@@ -1,148 +1,172 @@
 "use client"
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { MdArrowBackIos, MdArrowForwardIos } from "react-icons/md";
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Course from './Course'
+import Button from '@mui/material/Button';
+import CalendarCourse from './CalendarCourse'
+import { CourseData } from "@/util/types";
 
-const Schedule = ({term}: {term: string}) => {
-    const days = ["Hours", "MON", "TUES", "WED", "THURS", "FRI"]
+const Schedule = ({
+    courseList
+}: {
+    courseList: CourseData[]
+}) => {
+    const days = ["Hours", "MON", "TUE", "WED", "THU", "FRI"]
     const [version, setVersion] = useState("1")
+    const terms = ["Fall 2023", "Spring 2024", "Fall 2024", "Spring 2025"]
+    const [currTermIndex, setCurrTermIndex] = useState<number>(terms.length - 1)
 
-    const sampleCourses = [
-        {
-            "courseCode": "ANTH-0028",
-            "courseName": "The Anthropology of Capitalism",
-            "description": "Anthropology of labor and economy examining capitalism as a complex, diverse, and historically-specific sociocultural period. Topics include industrial labor and exploitation; the development of the commodity form; exchange, debt, and the history of markets; global finance and de-industrialization; transformation and resilience of distinct cultures around the globe; environmental extraction; and post-capitalist movements and practices. Course materials are drawn from around the globe to illustrate the many forms of capitalism operating today.",
-            "sections": [
-                {
-                    "section": "01-LEC",
-                    "classNo": "23445",
-                    "schedule": "Tu, Th 10:30AM - 11:45AM",
-                    "location": "Tu, Th 10:30AM - 11:45AM",
-                    "session": "Lane Hall, Room 100",
-                    "faculty": "Alex Blanchette",
-                    "credits": "3",
-                    "status": ""
-                },
-                {
-                    "section": "02-LEC",
-                    "classNo": "25304",
-                    "schedule": "Time Not Specified",
-                    "location": "Time Not Specified",
-                    "session": "TBA",
-                    "faculty": "Alex Blanchette",
-                    "credits": "3",
-                    "status": ""
-                }
-            ]
-        },
-        {
-            "courseCode": "AAST-0193",
-            "courseName": "Independent Study",
-            "description": "Upon consent of the director of the minor, a student may design an independent study to be guided by the director or a faculty member associated with the minor.",
-            "sections": [
-                {
-                    "section": "01-IND",
-                    "classNo": "23562",
-                    "schedule": "Time Not Specified",
-                    "location": "Time Not Specified",
-                    "session": "TBA",
-                    "faculty": "STAFF",
-                    "credits": "3",
-                    "status": ""
-                }
-            ]
-        },
-        {
-            "courseCode": "ACL-0013",
-            "courseName": "RISE seminar",
-            "description": "Redefining the Image of Science and Engineering (RISE) is a first-year advising class designed to give first-year science and engineering students the opportunity to participate in academic- and college-life workshops where you will not only be supported in your transition to college but also exposed to faculty research and professional networking. It is also an amazing opportunity to join a community of peers with similar backgrounds, and to network with many people on the Tufts campus and beyond.",
-            "sections": [
-                {
-                    "section": "01-LEC",
-                    "classNo": "21874",
-                    "schedule": "Tu, Th 3:00PM - 4:15PM",
-                    "location": "Tu, Th 3:00PM - 4:15PM",
-                    "session": "Eaton Hall, 211",
-                    "faculty": "Grace Marie Festin Caldara, Sehba M. Hasan, Tara Zantow",
-                    "credits": "2",
-                    "status": ""
-                }
-            ]
-        }
-    ]
+    // schedule grid dimensions
+    const rows = 14;
+    const cols = 5;
+    const cells = Array.from({ length: rows * cols });
+
 
     const handleChangeVersion = (event: SelectChangeEvent) => {
         setVersion(event.target.value);
     };
-    
+
+    const calcRowStart = (startTime: string): number => {
+        const startTimeHourMin = startTime.split(":");
+        const hour = parseInt(startTimeHourMin[0]) % 12 + (startTimeHourMin[1].slice(-2) === "PM" ? 12 : 0);
+        const minutes = parseInt(startTimeHourMin[1].slice(0, 2))
+        return ((hour * 4 - 26) + Math.floor(minutes / 15));
+    }
+
+    const calcRowEnd = (startTime: string): number => {
+        const endTimeHourMin = startTime.split(":");
+        const hour = parseInt(endTimeHourMin[0]) % 12 + (endTimeHourMin[1].slice(-2) === "PM" ? 12 : 0);
+        const minutes = parseInt(endTimeHourMin[1].slice(0, 2))
+        return ((hour * 4 - 26) + Math.floor(minutes / 15));
+    }
+
+
+
+    // splits sections and different days into individual classes
+    const formattedCourses = courseList.flatMap(course => {
+        const sectionsList = course.sections.map(section => ({
+            courseCode: course.courseCode,
+            courseName: course.courseName,
+            description: course.description,
+            section: section.section,
+            classNo: section.classNo,
+            classTime: section.classTime,
+            location: section.location,
+            session: section.session,
+            faculty: section.faculty,
+            credits: section.credits,
+            status: section.status
+        }))
+        return sectionsList;
+    }).flatMap(course => {
+        const days = course.classTime.split(", ").flatMap(day => {
+            return [day.substring(0, 2).trim(), day.substring(2, day.length).trim()].filter(str => str !== "");
+        });
+        return days.map((day, index) => {
+            if (index !== days.length - 1) {
+                const { classTime, ...rest } = course;
+                return {
+                    ...rest,
+                    day,
+                    startTime: days[days.length - 1].split(" - ")[0],
+                    endTime: days[days.length - 1].split(" - ")[1]
+                };
+            }
+            return null;
+        }).filter((course) => course !== null);
+    })
+
     return (
         <div className="flex flex-col p-8">
+            {/* schedule nav */}
             <div className="flex justify-between">
-                <div className="flex">
-                    <button><MdArrowBackIos /></button>
-                    <h1 className="text-left m-8 text-xl">{term}</h1>
-                    <button><MdArrowForwardIos /></button>
+                <div className="flex justify-between w-48">
+                    <button onClick={() => setCurrTermIndex(currTermIndex - 1)} disabled={currTermIndex <= 0}><MdArrowBackIos /></button>
+                    <h1 className="text-left my-8 text-xl">{terms[currTermIndex]}</h1>
+                    <button onClick={() => setCurrTermIndex(currTermIndex + 1)} disabled={currTermIndex >= terms.length - 1}><MdArrowForwardIos /></button>
                 </div>
 
-                <FormControl sx={{ m: 1, minWidth: 120 }}>
-                    <Select
-                        value={version}
-                        onChange={handleChangeVersion}
-                        displayEmpty
-                        inputProps={{ 'aria-label': 'Without label' }}
+                <div className="flex items-center gap-x-4">
+                    <FormControl sx={{ m: 1, minWidth: 120, border: "none", boxShadow: "none" }}>
+                        <Select
+                            value={version}
+                            onChange={handleChangeVersion}
+                            displayEmpty
+                            inputProps={{ 'aria-label': 'Without label' }}
+                        >
+                            <MenuItem value="1">Version 1</MenuItem>
+                            <MenuItem value="2">Version 2</MenuItem>
+                            <MenuItem value="3">Version 3</MenuItem>
+                            <MenuItem value="4">Version 4</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <Button
+                        variant="contained"
+                        disableElevation
+                        sx={{
+                            backgroundColor: '#3D0DFF',
+                            padding: '1rem',
+                        }}
                     >
-                        <MenuItem value="1">Version 1</MenuItem>
-                        <MenuItem value="2">Version 2</MenuItem>
-                        <MenuItem value="3">Version 3</MenuItem>
-                        <MenuItem value="4">Version 4</MenuItem>
-                    </Select>
-                </FormControl>
-                
+                        Add to cart
+                    </Button>
+                </div>
             </div>
 
-            <div className="grid grid-cols-[1fr_repeat(5,_3fr)] max-w-full">
-                {/* schedule layout */}
+            {/* schedule layout */}
+            <div className={`grid grid-cols-[1fr_repeat(5,_3fr)] grid-rows-[auto_repeat(60,1rem)] max-w-full box-border`}>
+                {/* display days */}
                 {days.map(day => (
-                    <div key={day}>
-                        <h1 className={`py-2 px-4 border-none ${day === "Hours" ? "invisible" : "text-center"}`}>{day}</h1>
-                        <div className={`${day !== "Hours" && "border-r-1 border-gray-300"}`}>
-                            <div className="h-12"></div>
-                            {day === "Hours" ? <div className="grid-rows-14 text-right pr-[1.125rem]">
-                                {[...Array(14).keys()].map(i => (
-                                    <div key={i} className="leading-none h-16">{(i + 8) % 12 || 12}{i + 8 < 12 ? " AM" : " PM"}</div>
-                                ))}
-                            </div> : <div className="grid-rows-56">
-                                {[...Array(56).keys()].map(i => (
-                                    <div key={i} className={`${i % 4 == 0 && "border-t-1 border-gray-300"} h-4`}></div>
-                                ))}
-                            </div>}
-                        </div>
+                    <React.Fragment key={day}>
+                        <h1 className={`row-start-1 py-2 px-4 border-none ${day === "Hours" ? "invisible" : "text-center"}`}>{day}</h1>
+                    </React.Fragment>
+                ))}
+                {/* add empty space in first row to get grid lines */}
+                {[...Array(5).keys()].map(i => (
+                    <div key={i} className={`row-start-3 row-span-3 border-gray-300 ${i !== 4 && "border-r-1"}`} style={{
+                        gridColumn: `${i + 2}`
+                    }}></div>
+                ))}
+                {/* display the hours */}
+                {[...Array(14).keys()].map(i => (
+                    <div
+                        key={i}
+                        className={`leading-none row-span-2 col-start-1 col-span-1 place-self-center`}
+                        style={{
+                            gridRowStart: `${i * 4 + 5}`
+                        }}
+                    >{(i + 8) % 12 || 12}{i + 8 < 12 ? " AM" : " PM"}
                     </div>
                 ))}
+                {/* add empty divs in each cell to get grid lines */}
+                {cells.map((_, index) => (
+                    <div
+                        key={index}
+                        className={`border-gray-300 h-16 row-span-4 border-t-1 ${(index % 5) !== 4 && "border-r-1"}`}
+                        style={{
+                            gridColumnStart: `${(index % 5) + 2}`,
+                            gridRowStart: `${Math.floor(index / 5) * 4 + 6}`,
+                        }}
+                    ></div>
+                ))}
+                {/* putting classes in schedule */}
+                {formattedCourses.map((course, index) => {
+                    const colStart = 1 + days.findIndex(day => day.slice(0, 2).toLowerCase() === course.day.toLowerCase())
+                    const rowStart = calcRowStart(course.startTime)
+                    const rowEnd = calcRowEnd(course.endTime);
+                    return <div key={index} className={`z-10 m-0.5`} style={{
+                        gridColumnStart: `${colStart}`,
+                        gridRowStart: `${rowStart}`,
+                        gridRowEnd: `${rowEnd}`
+                    }}>
+                        <CalendarCourse courseData={course} />
+                    </div>
+                })}
             </div>
-            {/* putting classes in schedule */}
-            {sampleCourses.map(course => {
-                const sectionsList = course.sections.map(section => ({
-                    courseCode: course.courseCode,
-                    courseName: course.courseName,
-                    description: course.description,
-                    section: section.section,
-                    classNo: section.classNo,
-                    schedule: section.schedule,
-                    location: section.location,
-                    session: section.session,
-                    faculty: section.faculty,
-                    credits: section.credits,
-                    status: section.status
-                }))
-                console.log(sectionsList)
-                return <div key={course.courseCode}></div>;
-            })}
-        </div>
+        </div >
     )
 }
 
