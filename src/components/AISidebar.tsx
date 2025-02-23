@@ -9,40 +9,45 @@ import { styled } from '@mui/material/styles';
 import { Box } from '@mui/material';
 
 const courses = [
-  {
-    courseCode: "CS 40",
-    courseName: "Machine Structure & Assembly",
-    instructor: "Mark Sheldon",
-    time: "Tu, Th 1:30PM - 2:45PM",
-    location: "Robinson Wing TTC, Room 253",
-    description: "Structure of machine-level data and code including memory, cache, registers, and assembly language translation. High demand course.",
-    requirements: ["CS11", "CS15"],
-    ratings: {
-      overall: 4.2,
-      difficulty: 3.8
-    }
-  },
+  // {
+  //   courseCode: "CS 40",
+  //   courseName: "Machine Structure & Assembly",
+  //   instructor: "Mark Sheldon",
+  //   time: "TTh 1:30PM - 2:45PM",
+  //   location: "Robinson Wing TTC, Room 253",
+  //   description: "Structure of machine-level data and code including memory, cache, registers, and assembly language translation. High demand course.",
+  //   requirements: ["CS 11", "CS 15"],
+  //   credits: 5,
+  //   ratings: {
+  //     overall: 4.2,
+  //     difficulty: 5
+  //   }
+  // },
   {
     courseCode: "CS 171",
     courseName: "Human Computer Interaction",
     instructor: "Robert Jacob",
-    time: "Mo, We 1:30PM - 2:45PM",
+    time: "MW 1:30PM - 2:45PM",
     location: "Joyce Cummings Center, 160",
     description: "Introduction to human-computer interaction, focusing on designing and testing user interfaces and interaction methods.",
-    requirements: ["CS15"],
+    requirements: ["CS 15"],
+    credits: 3,
+
     ratings: {
       overall: 4.0,
-      difficulty: 3.5
+      difficulty: 3.1
     }
   },
   {
     courseCode: "CS 138",
     courseName: "Reinforcement Learning",
     instructor: "Jivko Sinapov",
-    time: "Mo, We 3:00PM - 4:15PM",
+    time: "MW 3:00PM - 4:15PM",
     location: "Joyce Cummings Center, 160",
     description: "Explores reinforcement learning techniques for agents in complex, uncertain environments. Topics include practical applications, software libraries, and advanced topics such as transfer and deep RL.",
-    requirements: ["CS131", "CS135"],
+    requirements: ["CS 131", "CS 135"],
+    credits: 3,
+
     ratings: {
       overall: 4.1,
       difficulty: 3.9
@@ -52,10 +57,12 @@ const courses = [
     courseCode: "MATH 165",
     courseName: "Probability",
     instructor: "David Smyth",
-    time: "Tu, Th 3:00PM - 4:15PM",
+    time: "TTh 3:00PM - 4:15PM",
     location: "Joyce Cummings Center, 260",
     description: "Covers probability theory including conditional probability, random variables, expectations, distributions, laws of large numbers, and the central limit theorem.",
     requirements: [],
+    credits: 4,
+
     ratings: {
       overall: 4.3,
       difficulty: 4.0
@@ -98,19 +105,147 @@ interface Message {
   timestamp: Date;
 }
 
+interface AISidebarProps {
+  onUpdateContent: (content: string) => void;
+}
+
+const AISidebar: React.FC<AISidebarProps> = ({ onUpdateContent }) => {
+  const [messages, setMessages] = useState<Message[]>([]);
+  // const [activeTab, setActiveTab] = useState('suggestions');
+  const [chatResponse, setChatResponse] = useState("");
+  const [inputValue, setInputValue] = useState(""); // User input
+  const [chatHistory, setChatHistory] = useState<string[]>([]);
+  const chatEndRef = useRef<HTMLDivElement | null>(null);
+  // const [selectedSuggestion, setSelectedSuggestion] = useState<any>(null);
+  const [isTyping, setIsTyping] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [responseText, setResponseText] = useState('');
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [mockMessageIndex, setMockMessageIndex] = useState(0);
+
+  const [hasAppendedMessages, setHasAppendedMessages] = useState(false);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isTyping]);
+
+  const showTypingAnimation = (message: React.ReactNode, onComplete?: () => void) => {
+    setIsTyping(true);
+    setResponseText(message as string);
+    // The typing animation will call onComplete when done
+  };
+
+  async function handleAPISend() {
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: inputValue }),
+      });
+
+      setTimeout(() => {
+        setIsLoading(false);
+        setIsTyping(true);
+      }, 1500);
+
+      const data = await res.json();
+      const answer = data.answer || data.error;
+      setChatResponse(answer);
+      setChatHistory((prev) => [...prev, answer]);
+      setInputValue("");
+    } catch (error) {
+      console.error("Error calling AI API:", error);
+      const errorMessage = "Error: " + (error as Error).message;
+      setChatResponse(errorMessage);
+      setChatHistory((prev) => [...prev, errorMessage]);
+    }
+  }
+  const handleFinishSelecting = () => {
+    setTimeout(() => {
+      setIsLoading(false);
+      const nextIndex = mockMessageIndex + 1; // Increment first
+      console.log(nextIndex);
+      if (nextIndex < mockMessages.length) {
+        const nextMockMessage = mockMessages[nextIndex]; // Get the next message
+        const mockMessage: Message = {
+          id: (Date.now() + nextIndex).toString(),
+          content: nextMockMessage.content,
+          sender: 'ai',
+          timestamp: new Date()
+        };
+  
+        showTypingAnimation(nextMockMessage.content, () => {
+          setMessages((prev) => [...prev, mockMessage]);
+        });
+  
+        setMockMessageIndex(prevIndex => prevIndex + 1); // Update state after setting the message
+        console.log(mockMessageIndex);
+      }
+    }, 1500);
+  };
+
+  const handleSend = () => {
+    if (!inputValue.trim() || isTyping) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      content: inputValue.trim(),
+      sender: 'user',
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setIsLoading(true);
+    setInputValue('');
+
+    if (inputRef.current) {
+      inputRef.current.style.height = '36px';
+    }
+
+    setTimeout(() => {
+      setIsLoading(false);
+      if (mockMessageIndex < mockMessages.length) {
+        if (mockMessageIndex == 1) {
+          console.log(mockMessageIndex);
+          setMockMessageIndex(mockMessageIndex + 1);
+          console.log(mockMessageIndex);
+          
+        }
+        const nextMockMessage = mockMessages[mockMessageIndex];
+        const mockMessage: Message = {
+          id: (Date.now() + mockMessageIndex).toString(),
+          content: nextMockMessage.content,
+          sender: 'ai',
+          timestamp: new Date()
+        };
+
+        showTypingAnimation(nextMockMessage.content, () => {
+          setMessages(prev => [...prev, mockMessage]);
+        });
+
+        setMockMessageIndex(prevIndex => prevIndex + 1);
+      }
+    }, 1500);
+
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+  
 const mockMessages: Message[] = [
-  {
-    id: '6',
-    content: "Hmm. That’s a very smart move. Here are a list of classes that you can take. Select classes you would like to add to your schedule:",
-    sender: 'ai',
-    timestamp: new Date()
-  },
   {
     id: '6',
     content: (
       <div>
-        <AIAuditClassList courseList={courseList} />
-        <p className='mt-4'>When you are finished selecting, please select the "Finished selecting" button. Or type "Yes" to confirm selection.</p>
+        <p>Here are a list of classes that you can take. Select classes you would like to add to your schedule:</p>
+        <br />
+        <AIAuditClassList courseList={courseList} onFinishSelecting={handleFinishSelecting}/>
       </div>
     ),
     sender: 'ai',
@@ -134,34 +269,7 @@ const mockMessages: Message[] = [
     sender: 'ai',
     timestamp: new Date()
   },
-  {
-    // What classes should I take if I want to do robotics and fulfill my requirements?
-    id: '1',
-    content: (
-      <div>
-        <p className='mb-2'>Follow a two‑step plan:</p>
-        <ol>
-          <li className='mb-2'>
-            <strong>Core CS Courses:</strong>
-            <p>Complete required courses (CS 11, 15, 40, 61, 105, 160, 170, etc.).</p>
-          </li>
-          <li>
-            <strong>Robotics Electives:</strong>
-            <ul>
-              <li>CS 133: Human‑Robot Interaction</li>
-              <li>CS 141: Probabilistic Robotics</li>
-              <li>CS 139: AI &amp; Robotics Ethics</li>
-              <li>Other robotics/AI electives (e.g., CS 138: Reinforcement Learning)</li>
-            </ul>
-            <p>Finish with a robotics capstone (CS 97/98 or CS 197).</p>
-          </li>
-        </ol>
-        <p className='mt-4'>Consult your advisor for the latest guidelines.</p>
-      </div>
-    ),
-    sender: 'ai',
-    timestamp: new Date()
-  },
+  
   //“Can I double count discrete math for both the natural science elective and my math major?”
   {
     id: '3',
@@ -238,194 +346,6 @@ const mockMessages: Message[] = [
   }
 ];
 
-interface AISidebarProps {
-  onUpdateContent: (content: string) => void;
-}
-
-const AISidebar: React.FC<AISidebarProps> = ({ onUpdateContent }) => {
-  const [messages, setMessages] = useState<Message[]>(false ? mockMessages : []);
-  // const [activeTab, setActiveTab] = useState('suggestions');
-  const [chatResponse, setChatResponse] = useState("");
-  const [inputValue, setInputValue] = useState(""); // User input
-  const [chatHistory, setChatHistory] = useState<string[]>([]);
-  const chatEndRef = useRef<HTMLDivElement | null>(null);
-  // const [selectedSuggestion, setSelectedSuggestion] = useState<any>(null);
-  const [isTyping, setIsTyping] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [responseText, setResponseText] = useState('');
-  const inputRef = useRef<HTMLTextAreaElement | null>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [mockMessageIndex, setMockMessageIndex] = useState(0);
-
-  const [hasAppendedMessages, setHasAppendedMessages] = useState(false);
-
-  // append to the front of mockMessages
-  // useEffect(() => {
-  //   if (!hasAppendedMessages) {
-  //     const newMessages: Message[] = [
-  //       {
-  //         id: "6", // Use the courseID as a unique id
-  //         content: (
-  //           <AIAuditClassConfirm
-  //             courseID={dummyCourseList[2].courseID}
-  //             courseName={dummyCourseList[2].courseName}
-  //             credits={dummyCourseList[2].credits}
-  //             attributes={dummyCourseList[2].attributes}
-  //           />
-  //         ),
-  //         sender: "ai",
-  //         timestamp: new Date("2025-02-22T17:30:00"),
-  //       },
-  //       {
-  //         id: "6", // Use the courseID as a unique id
-  //         content: (
-  //           <AIAuditClassConfirm
-  //             courseID={dummyCourseList[1].courseID}
-  //             courseName={dummyCourseList[1].courseName}
-  //             credits={dummyCourseList[1].credits}
-  //             attributes={dummyCourseList[1].attributes}
-  //           />
-  //         ),
-  //         sender: "ai",
-  //         timestamp: new Date("2025-02-22T17:30:00"),
-  //       },
-  //       {
-  //         id: "6",
-  //         content: (
-  //           <AIAuditClassConfirm
-  //             courseID={dummyCourseList[0].courseID}
-  //             courseName={dummyCourseList[0].courseName}
-  //             credits={dummyCourseList[0].credits}
-  //             attributes={dummyCourseList[0].attributes}
-  //           />
-  //         ),
-  //         sender: "ai",
-  //         timestamp: new Date("2025-02-22T17:30:00"),
-  //       },
-  //       {
-  //         id: "5",
-  //         content: <AIClassList courseList={dummyCourseList} />,
-  //         sender: "ai",
-  //         timestamp: new Date("2025-02-22T17:30:00"),
-  //       },
-  //     ];
-
-  //     // Prepend new messages only once
-  //     setMessages((prevMessages) => [...newMessages, ...prevMessages]);
-
-  //     // Set the flag to true so this effect doesn't run again
-  //     setHasAppendedMessages(true);
-  //   }
-  // }, [hasAppendedMessages]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, isTyping]);
-
-  const showTypingAnimation = (message: React.ReactNode, onComplete?: () => void) => {
-    setIsTyping(true);
-    setResponseText(message as string);
-    // The typing animation will call onComplete when done
-  };
-
-  async function handleAPISend() {
-    setIsLoading(true);
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: inputValue }),
-      });
-
-      setTimeout(() => {
-        setIsLoading(false);
-        setIsTyping(true);
-      }, 1500);
-
-      const data = await res.json();
-      const answer = data.answer || data.error;
-      setChatResponse(answer);
-      setChatHistory((prev) => [...prev, answer]);
-      setInputValue("");
-    } catch (error) {
-      console.error("Error calling AI API:", error);
-      const errorMessage = "Error: " + (error as Error).message;
-      setChatResponse(errorMessage);
-      setChatHistory((prev) => [...prev, errorMessage]);
-    }
-  }
-
-  const handleSend = () => {
-    if (!inputValue.trim() || isTyping) return;
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      content: inputValue.trim(),
-      sender: 'user',
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-    setIsLoading(true);
-    setInputValue('');
-
-    if (inputRef.current) {
-      inputRef.current.style.height = '36px';
-    }
-
-    setTimeout(() => {
-      setIsLoading(false);
-      if (mockMessageIndex < mockMessages.length) {
-        const nextMockMessage = mockMessages[mockMessageIndex];
-        const mockMessage: Message = {
-          id: (Date.now() + mockMessageIndex).toString(),
-          content: nextMockMessage.content,
-          sender: 'ai',
-          timestamp: new Date()
-        };
-
-        showTypingAnimation(nextMockMessage.content, () => {
-          setMessages(prev => [...prev, mockMessage]);
-        });
-
-        setMockMessageIndex(prevIndex => prevIndex + 1);
-      }
-    }, 1500);
-
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  };
-
-  useEffect(() => {
-    if (chatEndRef.current) {
-      chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [chatHistory]);
-
-  const ScrollableBox = styled(Box)({
-    overflowY: 'auto',
-    '&::-webkit-scrollbar': {
-      width: '6px',
-      opacity: 0,
-      transition: 'opacity 0.3s',
-    },
-    '&:hover::-webkit-scrollbar': {
-      opacity: 1,
-    },
-    '&::-webkit-scrollbar-thumb': {
-      backgroundColor: '#ccc',
-      borderRadius: '3px',
-    },
-    '&::-webkit-scrollbar-thumb:hover': {
-      backgroundColor: '#aaa',
-    },
-  });
-
   return (
     <div className="h-full flex flex-col bg-white mx-10">
       {/* Sidebar Header */}
@@ -444,7 +364,7 @@ const AISidebar: React.FC<AISidebarProps> = ({ onUpdateContent }) => {
 
       {/* Main Content Area with Chat History */}
       <div className="flex-1 overflow-hidden relative">
-        <ScrollableBox className="h-full p-3 space-y-3">
+        <div className="h-full overflow-auto p-3 space-y-3">
           {messages.map((message) => (
             <div
               key={message.id}
@@ -492,7 +412,7 @@ const AISidebar: React.FC<AISidebarProps> = ({ onUpdateContent }) => {
             </div>
           )}
           <div ref={messagesEndRef} />
-        </ScrollableBox>
+        </div>
       </div>
 
       {/* Input Area */}

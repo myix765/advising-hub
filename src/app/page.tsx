@@ -21,7 +21,7 @@ const handleUpdateContent = (content: string) => {
 
 
       {/* AI Sidebar */}
-      <aside className="w-80 border-l border-gray-200 bg-white">
+      <aside className="w-200 border-l border-gray-200 bg-white">
         <AISidebar onUpdateContent={handleUpdateContent} />
       </aside>
     </div>

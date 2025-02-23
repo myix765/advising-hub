@@ -1,7 +1,7 @@
 import { AuditCourseProps } from "@/types/AIMessage";
 import AIClassSlot from "./AuditClassSlot";
 
-const AIAuditClassList: React.FC<{ courseList: AuditCourseProps[] }> = ({ courseList }) => {
+const AIAuditClassList: React.FC<{ courseList: AuditCourseProps[], onFinishSelecting: () => void }> = ({ courseList, onFinishSelecting }) => {
     return (
         <div className="flex justify-center text-xs">
             <div>
@@ -17,7 +17,11 @@ const AIAuditClassList: React.FC<{ courseList: AuditCourseProps[] }> = ({ course
                     ))}
                 </div>
                 <div className="flex justify-between mt-3 mx-2">
-                    <button className="border px-4 py-2 rounded-full flex-1 mx-1 text-white bg-indigo-500">Finished selecting</button>
+                    <button 
+                        className="border px-4 py-2 rounded-full flex-1 mx-1 text-white bg-indigo-500"
+                        onClick={onFinishSelecting}
+                        >
+                        Finished selecting</button>
                     <button className="border px-4 py-2 rounded-full flex-1 mx-1 bg-slate-100">Cancel</button>
                 </div>
             </div>

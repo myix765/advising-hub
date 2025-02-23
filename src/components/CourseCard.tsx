@@ -7,6 +7,7 @@ interface CourseCardProps {
   time: string;
   location: string;
   description?: string;
+  credits: number,
   requirements?: string[];
   ratings?: {
     overall: number;
@@ -22,6 +23,7 @@ const CourseCard = ({
   location,
   description = "No description available.",
   requirements = [],
+  credits,
   ratings = { overall: 0, difficulty: 0 }
 }: CourseCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -59,15 +61,16 @@ const CourseCard = ({
 
   // Regular card view (not confirmed)
   return (
+    
     <div className='mx-4'>
-      <div className="bg-white rounded-3xl p-4 px-5 max-w-sm border border-slate-300">
+      <div className="justify-center bg-white rounded-3xl p-4 px-5 max-w-sm border border-slate-300">
         {/* Always visible: course code and name */}
         <div className="flex justify-between items-start mb-0.5">
           <h2 className="text-sm font-semibold text-gray-900">
             {courseCode} {courseName}
           </h2>
         </div>
-        <p className="text-xs text-gray-600 mb-0.5">{instructor}</p>
+        <p className="text-xs text-gray-600 mb-0.5">{instructor}, {credits} SHUs</p>
         <p className="text-xs text-gray-600 mb-0.5">{time}</p>
         <p className="text-xs text-gray-600 mb-2">{location}</p>
 
@@ -134,7 +137,7 @@ const CourseCard = ({
         <button
           className="border px-4 py-2 rounded-full flex-1 mx-1 text-white bg-indigo-500"
           onClick={() => setIsConfirmed(true)}>Add Course</button>
-        <button className="border px-4 py-2 rounded-full flex-1 mx-1 bg-slate-100">Cancel</button>
+        <button className="border px-4 py-2 rounded-full flex-1 mx-1 bg-slate-100">Remove</button>
       </div>
     </div>
   );
