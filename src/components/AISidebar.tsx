@@ -108,14 +108,10 @@ interface Message {
 const mockMessages: Message[] = [
   {
     id: '6',
-    content: "Hmm. That’s a very smart move. Here are a list of classes that you can take. Select classes you would like to add to your schedule:",
-    sender: 'ai',
-    timestamp: new Date()
-  },
-  {
-    id: '6',
     content: (
       <div>
+        <p>Here are a list of classes that you can take. Select classes you would like to add to your schedule:</p>
+        <br />
         <AIAuditClassList courseList={courseList} />
         <p className='mt-4'>When you are finished selecting, please select the "Finished selecting" button. Or type "Yes" to confirm selection.</p>
       </div>
@@ -141,34 +137,7 @@ const mockMessages: Message[] = [
     sender: 'ai',
     timestamp: new Date()
   },
-  {
-    // What classes should I take if I want to do robotics and fulfill my requirements?
-    id: '1',
-    content: (
-      <div>
-        <p className='mb-2'>Follow a two‑step plan:</p>
-        <ol>
-          <li className='mb-2'>
-            <strong>Core CS Courses:</strong>
-            <p>Complete required courses (CS 11, 15, 40, 61, 105, 160, 170, etc.).</p>
-          </li>
-          <li>
-            <strong>Robotics Electives:</strong>
-            <ul>
-              <li>CS 133: Human‑Robot Interaction</li>
-              <li>CS 141: Probabilistic Robotics</li>
-              <li>CS 139: AI &amp; Robotics Ethics</li>
-              <li>Other robotics/AI electives (e.g., CS 138: Reinforcement Learning)</li>
-            </ul>
-            <p>Finish with a robotics capstone (CS 97/98 or CS 197).</p>
-          </li>
-        </ol>
-        <p className='mt-4'>Consult your advisor for the latest guidelines.</p>
-      </div>
-    ),
-    sender: 'ai',
-    timestamp: new Date()
-  },
+  
   //“Can I double count discrete math for both the natural science elective and my math major?”
   {
     id: '3',
@@ -266,65 +235,6 @@ const AISidebar: React.FC<AISidebarProps> = ({ onUpdateContent }) => {
 
   const [hasAppendedMessages, setHasAppendedMessages] = useState(false);
 
-  // append to the front of mockMessages
-  // useEffect(() => {
-  //   if (!hasAppendedMessages) {
-  //     const newMessages: Message[] = [
-  //       {
-  //         id: "6", // Use the courseID as a unique id
-  //         content: (
-  //           <AIAuditClassConfirm
-  //             courseID={dummyCourseList[2].courseID}
-  //             courseName={dummyCourseList[2].courseName}
-  //             credits={dummyCourseList[2].credits}
-  //             attributes={dummyCourseList[2].attributes}
-  //           />
-  //         ),
-  //         sender: "ai",
-  //         timestamp: new Date("2025-02-22T17:30:00"),
-  //       },
-  //       {
-  //         id: "6", // Use the courseID as a unique id
-  //         content: (
-  //           <AIAuditClassConfirm
-  //             courseID={dummyCourseList[1].courseID}
-  //             courseName={dummyCourseList[1].courseName}
-  //             credits={dummyCourseList[1].credits}
-  //             attributes={dummyCourseList[1].attributes}
-  //           />
-  //         ),
-  //         sender: "ai",
-  //         timestamp: new Date("2025-02-22T17:30:00"),
-  //       },
-  //       {
-  //         id: "6",
-  //         content: (
-  //           <AIAuditClassConfirm
-  //             courseID={dummyCourseList[0].courseID}
-  //             courseName={dummyCourseList[0].courseName}
-  //             credits={dummyCourseList[0].credits}
-  //             attributes={dummyCourseList[0].attributes}
-  //           />
-  //         ),
-  //         sender: "ai",
-  //         timestamp: new Date("2025-02-22T17:30:00"),
-  //       },
-  //       {
-  //         id: "5",
-  //         content: <AIClassList courseList={dummyCourseList} />,
-  //         sender: "ai",
-  //         timestamp: new Date("2025-02-22T17:30:00"),
-  //       },
-  //     ];
-
-  //     // Prepend new messages only once
-  //     setMessages((prevMessages) => [...newMessages, ...prevMessages]);
-
-  //     // Set the flag to true so this effect doesn't run again
-  //     setHasAppendedMessages(true);
-  //   }
-  // }, [hasAppendedMessages]);
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -408,31 +318,6 @@ const AISidebar: React.FC<AISidebarProps> = ({ onUpdateContent }) => {
     }
   };
 
-  useEffect(() => {
-    if (chatEndRef.current) {
-      chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [chatHistory]);
-
-  const ScrollableBox = styled(Box)({
-    overflowY: 'auto',
-    '&::-webkit-scrollbar': {
-      width: '6px',
-      opacity: 0,
-      transition: 'opacity 0.3s',
-    },
-    '&:hover::-webkit-scrollbar': {
-      opacity: 1,
-    },
-    '&::-webkit-scrollbar-thumb': {
-      backgroundColor: '#ccc',
-      borderRadius: '3px',
-    },
-    '&::-webkit-scrollbar-thumb:hover': {
-      backgroundColor: '#aaa',
-    },
-  });
-
   return (
     <div className="h-full flex flex-col bg-white mx-10">
       {/* Sidebar Header */}
@@ -451,7 +336,7 @@ const AISidebar: React.FC<AISidebarProps> = ({ onUpdateContent }) => {
 
       {/* Main Content Area with Chat History */}
       <div className="flex-1 overflow-hidden relative">
-        <ScrollableBox className="h-full p-3 space-y-3">
+        <div className="h-full overflow-auto p-3 space-y-3">
           {messages.map((message) => (
             <div
               key={message.id}
@@ -499,7 +384,7 @@ const AISidebar: React.FC<AISidebarProps> = ({ onUpdateContent }) => {
             </div>
           )}
           <div ref={messagesEndRef} />
-        </ScrollableBox>
+        </div>
       </div>
 
       {/* Input Area */}
