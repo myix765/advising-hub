@@ -179,11 +179,11 @@ const AISidebar: React.FC<AISidebarProps> = ({ onUpdateContent }) => {
           sender: 'ai',
           timestamp: new Date()
         };
-  
+
         showTypingAnimation(nextMockMessage.content, () => {
           setMessages((prev) => [...prev, mockMessage]);
         });
-  
+
         setMockMessageIndex(prevIndex => prevIndex + 1); // Update state after setting the message
         console.log(mockMessageIndex);
       }
@@ -215,7 +215,7 @@ const AISidebar: React.FC<AISidebarProps> = ({ onUpdateContent }) => {
           console.log(mockMessageIndex);
           setMockMessageIndex(mockMessageIndex + 1);
           console.log(mockMessageIndex);
-          
+
         }
         const nextMockMessage = mockMessages[mockMessageIndex];
         const mockMessage: Message = {
@@ -237,114 +237,105 @@ const AISidebar: React.FC<AISidebarProps> = ({ onUpdateContent }) => {
       inputRef.current.focus();
     }
   };
-  
-const mockMessages: Message[] = [
-  {
-    id: '6',
-    content: (
-      <div>
-        <p>Here are a list of classes that you can take. Select classes you would like to add to your schedule:</p>
-        <br />
-        <AIAuditClassList courseList={courseList} onFinishSelecting={handleFinishSelecting}/>
-      </div>
-    ),
-    sender: 'ai',
-    timestamp: new Date()
-  },
-  // after class selection
 
-  // classes
-  {
-    id: '2',
-    content: (
-      <div className="space-y-2">
-        {courses.map((course, index) => (
-          <CourseCard
-            key={index}
-            {...course}
-          />
-        ))}
-      </div>
-    ),
-    sender: 'ai',
-    timestamp: new Date()
-  },
-  
-  //“Can I double count discrete math for both the natural science elective and my math major?”
-  {
-    id: '3',
-    content: "Yes. But be aware that you can only double count half of your math major credits toward your CS major.",
-    sender: 'ai',
-    timestamp: new Date()
-  },
-  //“Who should I talk to if I want to graduate early?”
-  {
+  const mockMessages: Message[] = [
+    {
+      id: '6',
+      content: (
+        <div>
+          <p>Here are a list of classes that you can take. Select classes you would like to add to your schedule:</p>
+          <br />
+          <AIAuditClassList courseList={courseList} onFinishSelecting={handleFinishSelecting} />
+        </div>
+      ),
+      sender: 'ai',
+      timestamp: new Date()
+    },
+    // after class selection
 
-    id: '4',
-    content: (
-      <div>
-        <p>If you have questions or need guidance, you can reach out to John O'Keefe, the Senior Academic Advisor for Student Success at the School of Engineering.</p>
-        {/* <p>Book an appointment here:  
+    // classes
+    {
+      id: '2',
+      content: (
+        <div className="space-y-2">
+          {courses.map((course, index) => (
+            <CourseCard
+              key={index}
+              {...course}
+            />
+          ))}
+        </div>
+      ),
+      sender: 'ai',
+      timestamp: new Date()
+    },
+
+    //“Can I double count discrete math for both the natural science elective and my math major?”
+    {
+      id: '3',
+      content: "Yes. But be aware that you can only double count half of your math major credits toward your CS major.",
+      sender: 'ai',
+      timestamp: new Date()
+    },
+    //“Who should I talk to if I want to graduate early?”
+    {
+
+      id: '4',
+      content: (
+        <div>
+          <p>If you have questions or need guidance, you can reach out to John O'Keefe, the Senior Academic Advisor for Student Success at the School of Engineering.</p>
+          {/* <p>Book an appointment here:  
           <a href="https://calendly.com/john-okeefe" target='_blank'>Book an appointment</a>
           </p>  */}
-        <button
-          onClick={() => window.open('https://calendly.com/john-okeefe', '_blank')}
-          style={{
-            backgroundColor: '#007BFF',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            padding: '10px 20px',
-            fontSize: '16px',
-            cursor: 'pointer',
-            transition: 'background-color 0.3s ease',
-          }}
-        >
-          Book an appointment
-        </button>
-      </div>
-    ),
-    sender: 'ai',
-    timestamp: new Date()
-  },
-  // “What classes do I need to take if I want to do an engineering management minor?
-  {
-    id: '5',
-    content: (
-      <div>
-        <p>If you're planning to pursue an Engineering Management minor, you'll need to complete the following courses:</p>
-        <ul>
-          <li><strong>EM51:</strong> Engineering Management (Offered SP25)</li>
-          <li><strong>EM52:</strong> Technical &amp; Managerial Communication (Offered SP25)</li>
-          <li><strong>EM54:</strong> Engineering Leadership (Offered SP25)</li>
-          <li><strong>EM153:</strong> Management of Innovation (Offered SP25)</li>
-        </ul>
-        <br />
-        <p>Be sure to confirm course availability and any additional requirements with your academic advisor.</p>
-      </div>
-    ),
-    sender: 'ai',
-    timestamp: new Date()
-  },
-  //What credits would CS116 satisfy?
-  {
-    id: '6',
-    content: (
-      <div>
-        <p>
-          CS116 (which has a SOE‑Computing attribute) can count toward the following credit requirements:
-        </p>
-        <ul>
-          <li>System Elective</li>
-          <li>CS Social Context Elective (j)</li>
-          <li>General CS Elective (k)</li>
-        </ul>
-      </div>
-    ),
-    sender: 'ai',
-    timestamp: new Date()
-  }
-];
+          <button
+            onClick={() => window.open('https://calendly.com/john-okeefe', '_blank')}
+            className="border px-4 py-2 rounded-full flex-1 mx-1 text-white bg-indigo-500"
+          >
+            Book an appointment
+          </button>
+        </div>
+      ),
+      sender: 'ai',
+      timestamp: new Date()
+    },
+    // “What classes do I need to take if I want to do an engineering management minor?
+    {
+      id: '5',
+      content: (
+        <div>
+          <p>If you're planning to pursue an Engineering Management minor, you'll need to complete the following courses:</p>
+          <ul>
+            <li><strong>EM51:</strong> Engineering Management (Offered SP25)</li>
+            <li><strong>EM52:</strong> Technical &amp; Managerial Communication (Offered SP25)</li>
+            <li><strong>EM54:</strong> Engineering Leadership (Offered SP25)</li>
+            <li><strong>EM153:</strong> Management of Innovation (Offered SP25)</li>
+          </ul>
+          <br />
+          <p>Be sure to confirm course availability and any additional requirements with your academic advisor.</p>
+        </div>
+      ),
+      sender: 'ai',
+      timestamp: new Date()
+    },
+    //What credits would CS116 satisfy?
+    {
+      id: '6',
+      content: (
+        <div>
+          <p>
+            CS116 (which has a SOE‑Computing attribute) can count toward the following credit requirements:
+          </p>
+          <ul>
+            <li>System Elective</li>
+            <li>CS Social Context Elective (j)</li>
+            <li>General CS Elective (k)</li>
+          </ul>
+        </div>
+      ),
+      sender: 'ai',
+      timestamp: new Date()
+    }
+  ];
 
   return (
     <div className="h-full flex flex-col bg-white mx-10">

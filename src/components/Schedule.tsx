@@ -112,7 +112,7 @@ const Schedule = ({
     }, [courseList])
 
     return (
-        <div className={`grid grid-cols-[1fr_repeat(5,_3fr)] grid-rows-[auto_repeat(60,1rem)] max-w-full box-border pr-8 overflow-x-scroll`}>
+        <div className={`grid grid-cols-[1fr_repeat(5,_3fr)] grid-rows-[auto_repeat(60,1rem)] max-w-full box-border pr-8`}>
             {/* display days */}
             {days.map(day => (
                 <React.Fragment key={day}>

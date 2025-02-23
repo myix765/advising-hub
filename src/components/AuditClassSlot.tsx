@@ -30,7 +30,7 @@ const AIClassSlot: React.FC<AIClassSlotProps> = ({ courseCode, courseName, attri
 
     return (
         <button
-            className={`rounded-full ${hoverBgColor} ${bgColor} ${textColor} py-2 px-4 text-left w-full ${isSelected ? "font-bold" : ""}`}
+            className={`rounded-full ${hoverBgColor} ${bgColor} ${textColor} py-2 px-5 text-left w-full ${isSelected ? "font-bold" : ""}`}
             onClick={toggleSelection}
         >
             {courseCode} {courseName}

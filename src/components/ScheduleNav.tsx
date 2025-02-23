@@ -18,6 +18,7 @@ const ScheduleNav = ({
     currTermIndex: number,
     handleChangeTerm: (newTermIndex: number) => void
 }) => {
+
     const handleChangeVersion = (event: SelectChangeEvent) => {
         setVersion(event.target.value);
     };
@@ -42,7 +43,7 @@ const ScheduleNav = ({
                 </button>
             </div>
 
-            <div className="flex items-center gap-x-2">
+            {/* <div className="flex items-center gap-x-2">
                 <p>Schedule:</p>
                 <FormControl sx={{ m: 1, minWidth: 120, border: "none", boxShadow: "none" }}>
                     <Select
@@ -55,7 +56,7 @@ const ScheduleNav = ({
                         <MenuItem value="2">Version 2</MenuItem>
                     </Select>
                 </FormControl>
-            </div>
+            </div> */}
         </div>
     )
 }
