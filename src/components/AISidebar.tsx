@@ -10,36 +10,41 @@ const courses = [
     courseCode: "CS 40",
     courseName: "Machine Structure & Assembly",
     instructor: "Mark Sheldon",
-    time: "Tu, Th 1:30PM - 2:45PM",
+    time: "TTh 1:30PM - 2:45PM",
     location: "Robinson Wing TTC, Room 253",
     description: "Structure of machine-level data and code including memory, cache, registers, and assembly language translation. High demand course.",
     requirements: ["CS 11", "CS 15"],
+    credits: 5,
     ratings: {
       overall: 4.2,
-      difficulty: 3.8
+      difficulty: 5
     }
   },
   {
     courseCode: "CS 171",
     courseName: "Human Computer Interaction",
     instructor: "Robert Jacob",
-    time: "Mo, We 1:30PM - 2:45PM",
+    time: "MW 1:30PM - 2:45PM",
     location: "Joyce Cummings Center, 160",
     description: "Introduction to human-computer interaction, focusing on designing and testing user interfaces and interaction methods.",
     requirements: ["CS 15"],
+    credits: 3,
+
     ratings: {
       overall: 4.0,
-      difficulty: 3.5
+      difficulty: 3.1
     }
   },
   {
     courseCode: "CS 138",
     courseName: "Reinforcement Learning",
     instructor: "Jivko Sinapov",
-    time: "Mo, We 3:00PM - 4:15PM",
+    time: "MW 3:00PM - 4:15PM",
     location: "Joyce Cummings Center, 160",
     description: "Explores reinforcement learning techniques for agents in complex, uncertain environments. Topics include practical applications, software libraries, and advanced topics such as transfer and deep RL.",
     requirements: ["CS 131", "CS 135"],
+    credits: 3,
+
     ratings: {
       overall: 4.1,
       difficulty: 3.9
@@ -49,10 +54,12 @@ const courses = [
     courseCode: "MATH 165",
     courseName: "Probability",
     instructor: "David Smyth",
-    time: "Tu, Th 3:00PM - 4:15PM",
+    time: "TTh 3:00PM - 4:15PM",
     location: "Joyce Cummings Center, 260",
     description: "Covers probability theory including conditional probability, random variables, expectations, distributions, laws of large numbers, and the central limit theorem.",
     requirements: [],
+    credits: 4,
+
     ratings: {
       overall: 4.3,
       difficulty: 4.0

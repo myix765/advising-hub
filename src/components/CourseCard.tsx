@@ -7,6 +7,7 @@ interface CourseCardProps {
   time: string;
   location: string;
   description?: string;
+  credits: number,
   requirements?: string[];
   ratings?: {
     overall: number;
@@ -22,6 +23,7 @@ const CourseCard = ({
   location,
   description = "No description available.",
   requirements = [],
+  credits,
   ratings = { overall: 0, difficulty: 0 }
 }: CourseCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -63,7 +65,7 @@ const CourseCard = ({
         </h2>
       </div>
       <p className="text-xs text-gray-600 mb-0.5">{instructor}</p>
-      <p className="text-xs text-gray-600 mb-0.5">{time}</p>
+      <p className="text-xs text-gray-600 mb-0.5">{time}, {credits} SHUs</p>
       <p className="text-xs text-gray-600 mb-2">{location}</p>
       
       {/* Expanded content */}
