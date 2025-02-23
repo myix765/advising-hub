@@ -3,11 +3,12 @@ import ReqSlot from "@/components/ReqSlot";
 import { ReqBlockProps } from "@/types/status";
 
 const ReqBlock: React.FC<ReqBlockProps> = ({ totalCourses, coursesCompleted, creditType }) => {
-    const renderClassSlots = () => {
+    const renderedSlots = () => {
         return Array.from({ length: totalCourses }, (_, index) => (
             <ReqSlot 
                 key={index} 
-                isCompleted={index < coursesCompleted}
+                // Implement later
+                // isCompleted={index < coursesCompleted}
             />
         ));
     };
@@ -19,7 +20,7 @@ const ReqBlock: React.FC<ReqBlockProps> = ({ totalCourses, coursesCompleted, cre
                 <span className="text-gray-700">{creditType}</span>
                 <span className="text-gray-400 text-sm pb-4">Insert blurb here</span>
                 <div className="grid gap-2 grid-cols-2 gap-x-6 gap-y-4">
-                    {renderClassSlots()}
+                    {renderedSlots()}
                 </div>
             </div>
         </div>
